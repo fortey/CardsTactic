@@ -25,5 +25,8 @@ public partial class GameRoomState : Schema {
 
 	[Type(5, "map", typeof(MapSchema<CreatureSchema>))]
 	public MapSchema<CreatureSchema> creatures = new MapSchema<CreatureSchema>();
+
+	[Type(6, "map", typeof(MapSchema<NetworkedUser>))]
+	public MapSchema<NetworkedUser> networkedUsers = new MapSchema<NetworkedUser>();
 }
 

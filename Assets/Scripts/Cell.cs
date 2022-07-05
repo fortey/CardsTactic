@@ -1,18 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Cell : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private Color _normalColor;
+    [SerializeField] private Color _availableToMoveColor;
+    [SerializeField] private Image _image;
+
+    public CellState State = CellState.normal;
+    public void SetNormal()
     {
-        
+        _image.color = _normalColor;
+        State = CellState.normal;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SetAvailableToMove()
     {
-        
+        _image.color = _availableToMoveColor;
+        State = CellState.availableToMove;
     }
 }
+
+public enum CellState { normal, availableToMove, busy }

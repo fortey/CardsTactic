@@ -17,10 +17,11 @@ public class GameRoomController : MonoBehaviour
     [SerializeField] private static NetworkedUser _currentNetworkedUser;
 
     private Dictionary<string, Creature> _creatures = new Dictionary<string, Creature>();
-
+    private int _currentCellIndex = -1;
+    private int[] _availableToMoveCells;
     private void Start()
     {
-        _board.onCellClick += CellClickHandler;
+        _board.OnCellClick += CellClickHandler;
     }
 
     public async void JoinOrCreateRoom(ColyseusClient client, Dictionary<string, object> options)
@@ -52,6 +53,7 @@ public class GameRoomController : MonoBehaviour
         });
 
         _room.OnMessage<object>("start", StartGame);
+        _room.OnMessage<int[]>("available_cells", onAvailableCells);
 
         _room.State.creatures.OnAdd += OnCreatureAdd;
         _room.State.board.OnChange += OnBoardChange;
@@ -59,6 +61,8 @@ public class GameRoomController : MonoBehaviour
         _room.colyseusConnection.OnError += Room_OnError;
         _room.colyseusConnection.OnClose += Room_OnClose;
     }
+
+
 
     private void ClearRoomHandlers()
     {
@@ -93,6 +97,10 @@ public class GameRoomController : MonoBehaviour
     private void OnBoardChange(int index, string value)
     {
         Debug.Log($"board {index} - {value}");
+        if (value != "")
+        {
+            _creatures[value].transform.position = _board[index].transform.position;
+        }
     }
 
     private void OnCreatureAdd(string id, CreatureSchema schema)
@@ -133,8 +141,38 @@ public class GameRoomController : MonoBehaviour
         var creatureID = _room.State.board[index];
         if (creatureID != "")
         {
-            _room.Send("select_cell", index);
+            if (!_creatures.ContainsKey(creatureID)) return;
+
+            var creature = _creatures[creatureID];
+
+            if (creature.Owner == _currentNetworkedUser.sessionId)
+            {
+                _room.Send("select_cell", index);
+                _currentCellIndex = index;
+            }
+        }
+        else
+        {
+            if (_currentCellIndex >= 0 && _availableToMoveCells != null)
+            {
+                foreach (var i in _availableToMoveCells)
+                {
+                    if (i == index)
+                    {
+                        _room.Send("move", new int[] { _currentCellIndex, index });
+                        break;
+                    }
+                }
+            }
+            _board.ClearCells();
         }
 
+    }
+
+    private void onAvailableCells(int[] cells)
+    {
+        _board.ClearCells();
+        _board.SetAvailableCells(cells);
+        _availableToMoveCells = cells;
     }
 }

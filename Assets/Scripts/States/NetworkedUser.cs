@@ -1,25 +1,23 @@
+// 
+// THIS FILE HAS BEEN GENERATED AUTOMATICALLY
+// DO NOT CHANGE IT MANUALLY UNLESS YOU KNOW WHAT YOU'RE DOING
+// 
+// GENERATED USING @colyseus/schema 1.0.35
+// 
+
 using Colyseus.Schema;
-using Colyseus;
 
-[System.Serializable]
-public class NetworkedUser : ColyseusNetworkedUser
-{
-    public string updateHash;
+public partial class NetworkedUser : Schema {
+	[Type(0, "string")]
+	public string id = default(string);
 
-    [Type(0, "string")]
-    public string id = default(string);
+	[Type(1, "string")]
+	public string sessionId = default(string);
 
-    [Type(1, "string")]
-    public string sessionId = default(string);
+	[Type(2, "boolean")]
+	public bool connected = default(bool);
 
-    [Type(2, "boolean")]
-    public bool connected = default(bool);
-
-    [Type(3, "number")]
-    public double timestamp = default(double);
-
-    [Type(4, "map", typeof(MapSchema<string>), "string")]
-    public MapSchema<string> attributes = new MapSchema<string>();
-
+	[Type(3, "map", typeof(MapSchema<string>), "string")]
+	public MapSchema<string> attributes = new MapSchema<string>();
 }
 

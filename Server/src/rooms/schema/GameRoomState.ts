@@ -4,8 +4,17 @@ import { Schema, Context, type, MapSchema, ArraySchema } from "@colyseus/schema"
 export class CreatureSchema extends Schema {
   @type("string") id: string;
   @type("string") name: string;
+  @type("string") owner: string;
   @type("boolean") active: boolean;
   @type("number") health: number;
+  @type({ map: "string" }) attributes = new MapSchema<string>();
+}
+
+export class NetworkedUser extends Schema {
+  @type("string") id: string;
+  @type("string") sessionId: string;
+  @type("boolean") connected: boolean;
+  // @type("number") timestamp: number;
   @type({ map: "string" }) attributes = new MapSchema<string>();
 }
 
@@ -17,5 +26,5 @@ export class GameRoomState extends Schema {
   @type("string") winner: string;
   @type("boolean") draw: boolean;
   @type({ map: CreatureSchema }) creatures = new MapSchema<CreatureSchema>();
-
+  @type({ map: NetworkedUser }) networkedUsers = new MapSchema<NetworkedUser>();
 }

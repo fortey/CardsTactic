@@ -1,5 +1,6 @@
 import { Room, Client, Delayed } from "colyseus";
-import { GameRoomState, CreatureSchema } from "./schema/GameRoomState";
+import { GameRoomState, CreatureSchema, NetworkedUser } from "./schema/GameRoomState";
+import { Board } from "../game/Board";
 
 const TURN_TIMEOUT = 10
 const BOARD_WIDTH = 3;
@@ -8,11 +9,13 @@ export class gameRoom extends Room<GameRoomState> {
 
   maxClients = 2;
   randomMoveTimeout: Delayed;
+  board = new Board();
 
   onCreate(options: any) {
     this.setState(new GameRoomState());
     this.onMessage("action", (client, message) => this.playerAction(client, message));
-    this.onMessage("select_cell", (client, message) => console.log(message));
+    this.onMessage("select_cell", (client, message) => this.onSelectCell(client, message));
+    this.onMessage("move", (client, message) => this.onMove(client, message));
 
     const creature = new CreatureSchema();
     creature.id = "1";
@@ -21,12 +24,26 @@ export class gameRoom extends Room<GameRoomState> {
     creature.health = 10;
     this.state.board[1] = creature.id;
 
+    // this.state.players.forEach((value, key) => {
+    //   creature.owner = key; console.log(key);
+    // });
+
     this.state.creatures.set(creature.id, creature);
 
   }
 
   onJoin(client: Client, options: any) {
     this.state.players.set(client.sessionId, true);
+
+    let newNetworkedUser = new NetworkedUser().assign({
+      id: client.id,
+      sessionId: client.sessionId,
+    });
+
+    this.state.networkedUsers.set(client.sessionId, newNetworkedUser);
+    client.send("onJoin", newNetworkedUser);
+
+    this.state.creatures.get("1").owner = client.sessionId;
 
     if (this.state.players.size === 1) {
       this.state.currentTurn = client.sessionId;
@@ -166,5 +183,27 @@ export class gameRoom extends Room<GameRoomState> {
     }
 
     return won;
+  }
+
+  onSelectCell(client: Client, cell: number) {
+
+    const creatureID = this.state.board[cell];
+    const creature = this.state.creatures.get(creatureID);
+    if (creature != null && creature.owner === client.sessionId) {
+      client.send("available_cells", this.board.availableCellsForMove(this.state.board, cell));
+    }
+  }
+
+  onMove(client: Client, data: number[]) {
+
+    const creatureID = this.state.board[data[0]];
+    const creature = this.state.creatures.get(creatureID);
+    if (creature != null && creature.owner === client.sessionId) {
+      const available_cells = this.board.availableCellsForMove(this.state.board, data[0]);
+      if (available_cells.find(i => i == data[1]) !== undefined) {
+        this.state.board[data[0]] = "";
+        this.state.board[data[1]] = creatureID;
+      }
+    }
   }
 }

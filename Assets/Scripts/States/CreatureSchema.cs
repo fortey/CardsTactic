@@ -14,13 +14,16 @@ public partial class CreatureSchema : Schema {
 	[Type(1, "string")]
 	public string name = default(string);
 
-	[Type(2, "boolean")]
+	[Type(2, "string")]
+	public string owner = default(string);
+
+	[Type(3, "boolean")]
 	public bool active = default(bool);
 
-	[Type(3, "number")]
+	[Type(4, "number")]
 	public float health = default(float);
 
-	[Type(4, "map", typeof(MapSchema<string>), "string")]
+	[Type(5, "map", typeof(MapSchema<string>), "string")]
 	public MapSchema<string> attributes = new MapSchema<string>();
 }
 
