@@ -7,6 +7,9 @@ using UnityEngine;
 public class Variables : ScriptableObject
 {
     public CardSprite[] cardSprites;
+
+    public Material allyCardMaterial;
+    public Material enemyCardMaterial;
 }
 
 [System.Serializable]

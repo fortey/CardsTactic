@@ -129,7 +129,7 @@ public class GameRoomController : MonoBehaviour
                 var creatureSchema = _room.State.creatures[creatureID];
 
                 var creature = Instantiate(_creaturePrefab, _board[i].transform.position, Quaternion.identity, transform);
-                creature.Initialize(creatureSchema);
+                creature.Initialize(creatureSchema, creatureSchema.owner != _currentNetworkedUser.sessionId);
 
                 _creatures[creatureID] = creature;
             }

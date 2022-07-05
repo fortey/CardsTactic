@@ -1,6 +1,6 @@
 import { Room, Client, Delayed } from "colyseus";
 import { GameRoomState, CreatureSchema, NetworkedUser } from "./schema/GameRoomState";
-import { Board } from "../game/Board";
+import { Board } from "../game/board";
 
 const TURN_TIMEOUT = 10
 const BOARD_WIDTH = 3;
@@ -17,12 +17,21 @@ export class gameRoom extends Room<GameRoomState> {
     this.onMessage("select_cell", (client, message) => this.onSelectCell(client, message));
     this.onMessage("move", (client, message) => this.onMove(client, message));
 
-    const creature = new CreatureSchema();
+    let creature = new CreatureSchema();
     creature.id = "1";
     creature.name = "Orc";
     creature.active = true;
     creature.health = 10;
     this.state.board[1] = creature.id;
+    this.state.creatures.set(creature.id, creature);
+
+    creature = new CreatureSchema();
+    creature.id = "2";
+    creature.name = "Orc";
+    creature.active = true;
+    creature.health = 10;
+    this.state.board[8] = creature.id;
+    creature.owner = "enemy";
 
     // this.state.players.forEach((value, key) => {
     //   creature.owner = key; console.log(key);

@@ -9,6 +9,9 @@ public class Global : Singleton<Global>
 
     public Dictionary<string, Sprite> CardSprites;
 
+    public Material AllyCardMaterial { get => Variables.allyCardMaterial; }
+    public Material EnemyCardMaterial { get => Variables.enemyCardMaterial; }
+
     public override void Awake()
     {
         base.Awake();
