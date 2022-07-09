@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class GameRoomController : MonoBehaviour
 {
+    public event Action<Creature> OnCreatureSelected;
     private ColyseusRoom<GameRoomState> _room;
     private string _lastRoomId;
     private ColyseusClient _client;
@@ -17,8 +18,10 @@ public class GameRoomController : MonoBehaviour
     [SerializeField] private static NetworkedUser _currentNetworkedUser;
 
     private Dictionary<string, Creature> _creatures = new Dictionary<string, Creature>();
-    private int _currentCellIndex = -1;
+    //private int _currentCellIndex = -1;
     private int[] _availableToMoveCells;
+    private Creature _selectedCreature;
+    private string _selectedAction;
     private void Start()
     {
         _board.OnCellClick += CellClickHandler;
@@ -54,6 +57,7 @@ public class GameRoomController : MonoBehaviour
 
         _room.OnMessage<object>("start", StartGame);
         _room.OnMessage<int[]>("available_cells", onAvailableCells);
+        _room.OnMessage<int[]>("available_targets", OnAvailableTargets);
 
         _room.State.creatures.OnAdd += OnCreatureAdd;
         _room.State.board.OnChange += OnBoardChange;
@@ -61,8 +65,6 @@ public class GameRoomController : MonoBehaviour
         _room.colyseusConnection.OnError += Room_OnError;
         _room.colyseusConnection.OnClose += Room_OnClose;
     }
-
-
 
     private void ClearRoomHandlers()
     {
@@ -87,6 +89,7 @@ public class GameRoomController : MonoBehaviour
         _currentNetworkedUser = null;
     }
 
+    #region State events
     private static void OnStateChangeHandler(GameRoomState state, bool isFirstState)
     {
         // Setup room first state
@@ -99,7 +102,12 @@ public class GameRoomController : MonoBehaviour
         Debug.Log($"board {index} - {value}");
         if (value != "")
         {
-            _creatures[value].transform.position = _board[index].transform.position;
+            var creature = _creatures[value];
+            creature.Move(_board[index].transform.position);
+            if (creature.Owner == _currentNetworkedUser.sessionId)
+            {
+                _room.Send("select_cell", index);
+            }
         }
     }
 
@@ -118,55 +126,18 @@ public class GameRoomController : MonoBehaviour
     {
         Debug.Log("Room_OnError: " + errorMsg);
     }
+    #endregion
 
+    #region Server messages
     private void StartGame(object message)
     {
         for (int i = 0; i < _room.State.board.Count; i++)
         {
             if (_room.State.board[i] != "")
             {
-                var creatureID = _room.State.board[i];
-                var creatureSchema = _room.State.creatures[creatureID];
-
-                var creature = Instantiate(_creaturePrefab, _board[i].transform.position, Quaternion.identity, transform);
-                creature.Initialize(creatureSchema, creatureSchema.owner != _currentNetworkedUser.sessionId);
-
-                _creatures[creatureID] = creature;
+                CreateCreature(i);
             }
         }
-    }
-
-    private void CellClickHandler(int index)
-    {
-        var creatureID = _room.State.board[index];
-        if (creatureID != "")
-        {
-            if (!_creatures.ContainsKey(creatureID)) return;
-
-            var creature = _creatures[creatureID];
-
-            if (creature.Owner == _currentNetworkedUser.sessionId)
-            {
-                _room.Send("select_cell", index);
-                _currentCellIndex = index;
-            }
-        }
-        else
-        {
-            if (_currentCellIndex >= 0 && _availableToMoveCells != null)
-            {
-                foreach (var i in _availableToMoveCells)
-                {
-                    if (i == index)
-                    {
-                        _room.Send("move", new int[] { _currentCellIndex, index });
-                        break;
-                    }
-                }
-            }
-            _board.ClearCells();
-        }
-
     }
 
     private void onAvailableCells(int[] cells)
@@ -174,5 +145,92 @@ public class GameRoomController : MonoBehaviour
         _board.ClearCells();
         _board.SetAvailableCells(cells);
         _availableToMoveCells = cells;
+    }
+
+    private void OnAvailableTargets(int[] cells)
+    {
+        foreach (var cell in cells)
+        {
+            print(_creatures[_room.State.board[cell]].name);
+        }
+    }
+    #endregion
+
+    private void CellClickHandler(int index)
+    {
+        _board.ClearCells();
+        var creatureID = _room.State.board[index];
+        if (creatureID != "")
+        {
+            if (!_creatures.ContainsKey(creatureID)) return;
+
+            var creature = _creatures[creatureID];
+
+            _selectedCreature = creature;
+            OnCreatureSelected?.Invoke(creature);
+
+            if (creature.Owner == _currentNetworkedUser.sessionId)
+            {
+                _room.Send("select_cell", index);
+                //_currentCellIndex = index;
+            }
+        }
+        else
+        {
+            var isMoving = false;
+            if (_selectedCreature && _selectedCreature.Owner == _currentNetworkedUser.sessionId && _availableToMoveCells != null)
+            {
+                var currentCellIndex = GetCellIndex(_selectedCreature.ID);
+                if (currentCellIndex != -1)
+                {
+                    foreach (var i in _availableToMoveCells)
+                    {
+                        if (i == index)
+                        {
+                            _room.Send("move", new int[] { currentCellIndex, index });
+                            isMoving = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (!isMoving)
+            {
+                _selectedCreature = null;
+                OnCreatureSelected?.Invoke(null);
+            }
+
+        }
+
+    }
+
+    private void CreateCreature(int boardIndex)
+    {
+        var creatureID = _room.State.board[boardIndex];
+        var creatureSchema = _room.State.creatures[creatureID];
+
+        var creature = Instantiate(_creaturePrefab, _board[boardIndex].transform.position, Quaternion.identity, transform);
+        creature.Initialize(creatureSchema, creatureSchema.owner != _currentNetworkedUser.sessionId);
+
+        _creatures[creatureID] = creature;
+    }
+
+    public void OnAbilityClick(string abilityName)
+    {
+        _selectedAction = abilityName;
+        _room.Send("ability_clicked", new object[] { GetCellIndex(_selectedCreature.ID), abilityName });
+    }
+
+    private int GetCellIndex(string creatureID)
+    {
+        for (int i = 0; i < _room.State.board.Count; i++)
+        {
+            if (_room.State.board[i] == creatureID)
+            {
+                return i;
+            }
+        }
+        return -1;
     }
 }

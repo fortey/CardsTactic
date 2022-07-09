@@ -1,9 +1,10 @@
 import { Room, Client, Delayed } from "colyseus";
-import { GameRoomState, CreatureSchema, NetworkedUser } from "./schema/GameRoomState";
+import { GameRoomState, CreatureSchema, NetworkedUser, AbilitySchema } from "./schema/GameRoomState";
 import { Board } from "../game/board";
+import { abilities } from "../game/abilities/abilities";
 
 const TURN_TIMEOUT = 10
-const BOARD_WIDTH = 3;
+const BOARD_WIDTH = 5;
 
 export class gameRoom extends Room<GameRoomState> {
 
@@ -16,6 +17,7 @@ export class gameRoom extends Room<GameRoomState> {
     this.onMessage("action", (client, message) => this.playerAction(client, message));
     this.onMessage("select_cell", (client, message) => this.onSelectCell(client, message));
     this.onMessage("move", (client, message) => this.onMove(client, message));
+    this.onMessage("ability_clicked", (client, message) => this.onAbilityClicked(client, message));
 
     let creature = new CreatureSchema();
     creature.id = "1";
@@ -24,6 +26,13 @@ export class gameRoom extends Room<GameRoomState> {
     creature.health = 10;
     this.state.board[1] = creature.id;
     this.state.creatures.set(creature.id, creature);
+
+    const ability = new AbilitySchema();
+    ability.name = "melee";
+    ability.values.push(1);
+    ability.values.push(2);
+    ability.values.push(3);
+    creature.abilities.push(ability);
 
     creature = new CreatureSchema();
     creature.id = "2";
@@ -212,6 +221,16 @@ export class gameRoom extends Room<GameRoomState> {
       if (available_cells.find(i => i == data[1]) !== undefined) {
         this.state.board[data[0]] = "";
         this.state.board[data[1]] = creatureID;
+      }
+    }
+  }
+
+  onAbilityClicked(client: Client, data: any[]) {
+    const creatureID = this.state.board[data[0]];
+    const creature = this.state.creatures.get(creatureID);
+    if (creature != null && creature.owner === client.sessionId) {
+      if (abilities[data[1]] !== undefined) {
+        abilities[data[1]].onClicked(data[0], this.state, this.board, (targets: number[]) => client.send("available_targets", targets));
       }
     }
   }

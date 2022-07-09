@@ -23,7 +23,10 @@ public partial class CreatureSchema : Schema {
 	[Type(4, "number")]
 	public float health = default(float);
 
-	[Type(5, "map", typeof(MapSchema<string>), "string")]
-	public MapSchema<string> attributes = new MapSchema<string>();
+	[Type(5, "array", typeof(ArraySchema<string>), "string")]
+	public ArraySchema<string> attributes = new ArraySchema<string>();
+
+	[Type(6, "array", typeof(ArraySchema<AbilitySchema>))]
+	public ArraySchema<AbilitySchema> abilities = new ArraySchema<AbilitySchema>();
 }
 

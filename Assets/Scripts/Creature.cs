@@ -8,9 +8,18 @@ public class Creature : MonoBehaviour
 {
     [SerializeField] private Image _image;
     [SerializeField] private TextMeshProUGUI _nameLabel;
+    [SerializeField] private TextMeshProUGUI _healthLabel;
     public string ID { get; private set; }
     public string Owner { get; private set; }
+
+    public List<AbilitySchema> Abilities { get; private set; } = new List<AbilitySchema>();
     private bool _isEnemy;
+    private IEnumerator _waitForUpdate;
+
+    private void Start()
+    {
+        _waitForUpdate = new WaitForUpdate();
+    }
 
     public void Initialize(CreatureSchema schema, bool isEnemy)
     {
@@ -21,8 +30,36 @@ public class Creature : MonoBehaviour
         Owner = schema.owner;
         _isEnemy = isEnemy;
 
+        for (int i = 0; i < schema.abilities.Count; i++)
+        {
+            Abilities.Add(schema.abilities[i]);
+        }
+
         if (isEnemy) _image.material = Global.Instance.EnemyCardMaterial;
         else _image.material = Global.Instance.AllyCardMaterial;
+        UpdateStats(schema);
+    }
 
+    public void Move(Vector3 position)
+    {
+        StartCoroutine(Moving(position));
+    }
+
+    private IEnumerator Moving(Vector3 position)
+    {
+        var time = 0.5f;
+        var scale = 1 / time;
+        var startPos = transform.position;
+        while (time >= 0f)
+        {
+            time -= Time.deltaTime;
+            transform.position = Vector3.Lerp(position, startPos, time * scale);
+            yield return _waitForUpdate;
+        }
+    }
+
+    private void UpdateStats(CreatureSchema schema)
+    {
+        _healthLabel.text = schema.health.ToString();
     }
 }
