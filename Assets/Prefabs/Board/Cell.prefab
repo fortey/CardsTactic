@@ -68,8 +68,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 424126156, guid: 06352c7959b3ac04aa2aba45652dada2, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -137,3 +137,4 @@ MonoBehaviour:
   _normalColor: {r: 1, g: 1, b: 1, a: 1}
   _availableToMoveColor: {r: 0.025062274, g: 0.6037736, b: 0.11560941, a: 1}
   _image: {fileID: 8902213275568155890}
+  State: 0

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Variables
   m_EditorClassIdentifier: 
   cardSprites:
-  - name: Orc
+  - name: Mousy
     sprite: {fileID: 21300000, guid: 5807a71842036ba4da53774b5ba8d46b, type: 3}
   allyCardMaterial: {fileID: 2100000, guid: 40e622f0ad15d12408cbf9521a3bac60, type: 2}
   enemyCardMaterial: {fileID: 2100000, guid: 4a4d36c795c590a4a8d095149823ebe2, type: 2}

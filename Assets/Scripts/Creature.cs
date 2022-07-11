@@ -9,6 +9,7 @@ public class Creature : MonoBehaviour
     [SerializeField] private Image _image;
     [SerializeField] private TextMeshProUGUI _nameLabel;
     [SerializeField] private TextMeshProUGUI _healthLabel;
+    [SerializeField] private Image _targetImage;
     public string ID { get; private set; }
     public string Owner { get; private set; }
 
@@ -61,5 +62,27 @@ public class Creature : MonoBehaviour
     private void UpdateStats(CreatureSchema schema)
     {
         _healthLabel.text = schema.health.ToString();
+    }
+
+    public void SetTarget(bool active)
+    {
+        _targetImage.gameObject.SetActive(active);
+    }
+
+    public void OnStateChanged(List<Colyseus.Schema.DataChange> changes)
+    {
+        foreach (var changed in changes)
+        {
+            switch (changed.Field)
+            {
+                case ("health"):
+                    _healthLabel.text = changed.Value.ToString();
+                    break;
+                default:
+                    print(changed.Field);
+                    break;
+            }
+        }
+
     }
 }

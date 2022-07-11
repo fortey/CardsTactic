@@ -2,12 +2,12 @@ import { CreatureSchema, GameRoomState } from "../../rooms/schema/GameRoomState"
 import { Board } from "../board";
 import { Ability } from "./ability";
 
-export const melee = new Ability();
-melee.onClicked = function (cell: number, state: GameRoomState, board: Board, sendTargets: any) {
+export const shot = new Ability();
+shot.onClicked = function (cell: number, state: GameRoomState, board: Board, sendTargets: any) {
     const targets = board.neighboringTargets(state.board, cell);
     sendTargets(targets);
 };
-melee.invoke = function (cellSource: number, source: CreatureSchema, state: GameRoomState, board: Board, cellTarget: number) {
+shot.invoke = function (cellSource: number, source: CreatureSchema, state: GameRoomState, board: Board, cellTarget: number) {
     const targetID = state.board[cellTarget];
     const target = state.creatures.get(targetID);
     if (target == undefined) return;

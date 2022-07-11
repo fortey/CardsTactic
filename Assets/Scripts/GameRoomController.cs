@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Colyseus;
 using GameDevWare.Serialization;
 using UnityEngine;
+using System.Linq;
 
 public class GameRoomController : MonoBehaviour
 {
@@ -22,6 +23,7 @@ public class GameRoomController : MonoBehaviour
     private int[] _availableToMoveCells;
     private Creature _selectedCreature;
     private string _selectedAction;
+    private int[] _availableTargetCells;
     private void Start()
     {
         _board.OnCellClick += CellClickHandler;
@@ -126,6 +128,8 @@ public class GameRoomController : MonoBehaviour
     {
         Debug.Log("Room_OnError: " + errorMsg);
     }
+
+
     #endregion
 
     #region Server messages
@@ -149,60 +153,81 @@ public class GameRoomController : MonoBehaviour
 
     private void OnAvailableTargets(int[] cells)
     {
+        _availableTargetCells = cells;
         foreach (var cell in cells)
         {
-            print(_creatures[_room.State.board[cell]].name);
+            var creature = _creatures[_room.State.board[cell]];
+            if (creature)
+                creature.SetTarget(true);
         }
     }
     #endregion
 
     private void CellClickHandler(int index)
     {
-        _board.ClearCells();
-        var creatureID = _room.State.board[index];
-        if (creatureID != "")
+        if (_selectedAction == "")
         {
-            if (!_creatures.ContainsKey(creatureID)) return;
+            _board.ClearCells();
+            ClearTargetCreatures();
 
-            var creature = _creatures[creatureID];
-
-            _selectedCreature = creature;
-            OnCreatureSelected?.Invoke(creature);
-
-            if (creature.Owner == _currentNetworkedUser.sessionId)
+            var creatureID = _room.State.board[index];
+            if (creatureID != "")
             {
-                _room.Send("select_cell", index);
-                //_currentCellIndex = index;
+                if (!_creatures.ContainsKey(creatureID)) return;
+
+                var creature = _creatures[creatureID];
+
+                _selectedCreature = creature;
+                OnCreatureSelected?.Invoke(creature);
+
+                if (creature.Owner == _currentNetworkedUser.sessionId)
+                {
+                    _room.Send("select_cell", index);
+                    //_currentCellIndex = index;
+                }
+            }
+            else
+            {
+                var isMoving = false;
+                if (_selectedCreature && _selectedCreature.Owner == _currentNetworkedUser.sessionId && _availableToMoveCells != null)
+                {
+                    var currentCellIndex = GetCellIndex(_selectedCreature.ID);
+                    if (currentCellIndex != -1)
+                    {
+                        foreach (var i in _availableToMoveCells)
+                        {
+                            if (i == index)
+                            {
+                                _room.Send("move", new int[] { currentCellIndex, index });
+                                isMoving = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!isMoving)
+                {
+                    _selectedCreature = null;
+                    OnCreatureSelected?.Invoke(null);
+                }
+
             }
         }
         else
         {
-            var isMoving = false;
-            if (_selectedCreature && _selectedCreature.Owner == _currentNetworkedUser.sessionId && _availableToMoveCells != null)
+            if (_availableTargetCells != null && _availableTargetCells.Contains(index))
             {
                 var currentCellIndex = GetCellIndex(_selectedCreature.ID);
                 if (currentCellIndex != -1)
                 {
-                    foreach (var i in _availableToMoveCells)
-                    {
-                        if (i == index)
-                        {
-                            _room.Send("move", new int[] { currentCellIndex, index });
-                            isMoving = true;
-                            break;
-                        }
-                    }
+                    _room.Send("action", new object[] { currentCellIndex, _selectedAction, index });
                 }
             }
-
-            if (!isMoving)
-            {
-                _selectedCreature = null;
-                OnCreatureSelected?.Invoke(null);
-            }
-
+            _availableTargetCells = null;
+            _selectedAction = "";
+            ClearTargetCreatures();
         }
-
     }
 
     private void CreateCreature(int boardIndex)
@@ -214,6 +239,8 @@ public class GameRoomController : MonoBehaviour
         creature.Initialize(creatureSchema, creatureSchema.owner != _currentNetworkedUser.sessionId);
 
         _creatures[creatureID] = creature;
+
+        creatureSchema.OnChange += creature.OnStateChanged;
     }
 
     public void OnAbilityClick(string abilityName)
@@ -232,5 +259,13 @@ public class GameRoomController : MonoBehaviour
             }
         }
         return -1;
+    }
+
+    private void ClearTargetCreatures()
+    {
+        foreach (var creature in _creatures)
+        {
+            creature.Value.SetTarget(false);
+        }
     }
 }

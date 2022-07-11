@@ -61,6 +61,32 @@ export class Board {
 
         return cells;
     }
+
+    nneighboringTargets(board: string[], cellIndex: number, range: number): number[] {
+        const { x, y } = this.i_to_xy(cellIndex);
+        const cells = [];
+
+        if (x - 1 >= 0 && board[this.xy_to_i(x - 1, y)] !== "")
+            cells.push(this.xy_to_i(x - 1, y));
+        if (x + 1 < BOARD_WIDTH && board[this.xy_to_i(x + 1, y)] !== "")
+            cells.push(this.xy_to_i(x + 1, y));
+
+        if (y - 1 >= 0 && board[this.xy_to_i(x, y - 1)] !== "")
+            cells.push(this.xy_to_i(x, y - 1));
+        if (y + 1 < BOARD_HEIGHT && board[this.xy_to_i(x, y + 1)] !== "")
+            cells.push(this.xy_to_i(x, y + 1));
+
+        if (x - 1 >= 0 && y - 1 >= 0 && board[this.xy_to_i(x - 1, y - 1)] !== "")
+            cells.push(this.xy_to_i(x - 1, y - 1));
+        if (x - 1 >= 0 && y + 1 < BOARD_HEIGHT && board[this.xy_to_i(x - 1, y + 1)] !== "")
+            cells.push(this.xy_to_i(x - 1, y + 1));
+        if (x + 1 < BOARD_WIDTH && y - 1 >= 0 && board[this.xy_to_i(x + 1, y - 1)] !== "")
+            cells.push(this.xy_to_i(x + 1, y - 1));
+        if (x + 1 < BOARD_WIDTH && y + 1 < BOARD_HEIGHT && board[this.xy_to_i(x + 1, y + 1)] !== "")
+            cells.push(this.xy_to_i(x + 1, y + 1));
+
+        return cells;
+    }
 }
 
 class Cell {

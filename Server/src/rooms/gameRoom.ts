@@ -18,10 +18,11 @@ export class gameRoom extends Room<GameRoomState> {
     this.onMessage("select_cell", (client, message) => this.onSelectCell(client, message));
     this.onMessage("move", (client, message) => this.onMove(client, message));
     this.onMessage("ability_clicked", (client, message) => this.onAbilityClicked(client, message));
+    this.onMessage("action", (client, message) => this.onAction(client, message));
 
     let creature = new CreatureSchema();
     creature.id = "1";
-    creature.name = "Orc";
+    creature.name = "Mousy";
     creature.active = true;
     creature.health = 10;
     this.state.board[1] = creature.id;
@@ -36,7 +37,7 @@ export class gameRoom extends Room<GameRoomState> {
 
     creature = new CreatureSchema();
     creature.id = "2";
-    creature.name = "Orc";
+    creature.name = "Mousy";
     creature.active = true;
     creature.health = 10;
     this.state.board[8] = creature.id;
@@ -232,6 +233,21 @@ export class gameRoom extends Room<GameRoomState> {
       if (abilities[data[1]] !== undefined) {
         abilities[data[1]].onClicked(data[0], this.state, this.board, (targets: number[]) => client.send("available_targets", targets));
       }
+    }
+  }
+
+  onAction(client: Client, data: any[]) {
+    if (this.state.currentTurn !== client.sessionId)
+      return;
+    const cellSource = data[0];
+    const action = data[1];
+    const cellTarget = data[2];
+
+    const creatureID = this.state.board[cellSource];
+    const creature = this.state.creatures.get(creatureID);
+
+    if (creature != null && creature.owner === client.sessionId) {
+      abilities[action].invoke(cellSource, creature, this.state, this.board, cellTarget);
     }
   }
 }
