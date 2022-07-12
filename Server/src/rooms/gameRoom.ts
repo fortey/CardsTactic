@@ -28,10 +28,17 @@ export class gameRoom extends Room<GameRoomState> {
     this.state.board[1] = creature.id;
     this.state.creatures.set(creature.id, creature);
 
-    const ability = new AbilitySchema();
+    let ability = new AbilitySchema();
     ability.name = "melee";
     ability.values.push(1);
     ability.values.push(2);
+    ability.values.push(3);
+    creature.abilities.push(ability);
+
+    ability = new AbilitySchema();
+    ability.name = "shot";
+    ability.values.push(2);
+    ability.values.push(3);
     ability.values.push(3);
     creature.abilities.push(ability);
 
@@ -231,7 +238,7 @@ export class gameRoom extends Room<GameRoomState> {
     const creature = this.state.creatures.get(creatureID);
     if (creature != null && creature.owner === client.sessionId) {
       if (abilities[data[1]] !== undefined) {
-        abilities[data[1]].onClicked(data[0], this.state, this.board, (targets: number[]) => client.send("available_targets", targets));
+        abilities[data[1]].onClicked(data[0], creature, this.state, this.board, (targets: number[]) => client.send("available_targets", targets));
       }
     }
   }

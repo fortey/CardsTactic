@@ -3,7 +3,7 @@ import { Board } from "../board";
 import { Ability } from "./ability";
 
 export const melee = new Ability();
-melee.onClicked = function (cell: number, state: GameRoomState, board: Board, sendTargets: any) {
+melee.onClicked = function (cell: number, source: CreatureSchema, state: GameRoomState, board: Board, sendTargets: any) {
     const targets = board.neighboringTargets(state.board, cell);
     sendTargets(targets);
 };

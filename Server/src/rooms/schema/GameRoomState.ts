@@ -32,4 +32,5 @@ export class GameRoomState extends Schema {
   @type("boolean") draw: boolean;
   @type({ map: CreatureSchema }) creatures = new MapSchema<CreatureSchema>();
   @type({ map: NetworkedUser }) networkedUsers = new MapSchema<NetworkedUser>();
+  @type(["string"]) graveyard: string[] = new ArraySchema<string>();
 }

@@ -23,7 +23,8 @@ public class ActionButton : MonoBehaviour
         {
             case ("melee"):
                 return $"Атака {abilitySchema.values[0]}-{abilitySchema.values[1]}-{abilitySchema.values[2]}";
-
+            case ("shot"):
+                return $"Выстрел {abilitySchema.values[2]}. Дальность {abilitySchema.values[1]}";
             default:
                 return string.Empty;
         }

@@ -28,5 +28,8 @@ public partial class GameRoomState : Schema {
 
 	[Type(6, "map", typeof(MapSchema<NetworkedUser>))]
 	public MapSchema<NetworkedUser> networkedUsers = new MapSchema<NetworkedUser>();
+
+	[Type(7, "array", typeof(ArraySchema<string>), "string")]
+	public ArraySchema<string> graveyard = new ArraySchema<string>();
 }
 
