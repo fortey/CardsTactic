@@ -14,5 +14,6 @@ melee.invoke = function (cellSource: number, source: CreatureSchema, state: Game
     const ability = source.abilities.find(ability => ability.name == "melee");
     if (ability == undefined) return;
 
-    target.health -= ability.values[0];
+    //target.health -= ability.values[0];
+    this.damage(cellTarget, target, state, ability.values[0]);
 };

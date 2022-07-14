@@ -2,6 +2,7 @@ import { Room, Client, Delayed } from "colyseus";
 import { GameRoomState, CreatureSchema, NetworkedUser, AbilitySchema } from "./schema/GameRoomState";
 import { Board } from "../game/board";
 import { abilities } from "../game/abilities/abilities";
+import { CreatureFactory } from "../game/creatureFactory";
 
 const TURN_TIMEOUT = 10
 const BOARD_WIDTH = 5;
@@ -20,42 +21,6 @@ export class gameRoom extends Room<GameRoomState> {
     this.onMessage("ability_clicked", (client, message) => this.onAbilityClicked(client, message));
     this.onMessage("action", (client, message) => this.onAction(client, message));
 
-    let creature = new CreatureSchema();
-    creature.id = "1";
-    creature.name = "Mousy";
-    creature.active = true;
-    creature.health = 10;
-    this.state.board[1] = creature.id;
-    this.state.creatures.set(creature.id, creature);
-
-    let ability = new AbilitySchema();
-    ability.name = "melee";
-    ability.values.push(1);
-    ability.values.push(2);
-    ability.values.push(3);
-    creature.abilities.push(ability);
-
-    ability = new AbilitySchema();
-    ability.name = "shot";
-    ability.values.push(2);
-    ability.values.push(3);
-    ability.values.push(3);
-    creature.abilities.push(ability);
-
-    creature = new CreatureSchema();
-    creature.id = "2";
-    creature.name = "Mousy";
-    creature.active = true;
-    creature.health = 10;
-    this.state.board[8] = creature.id;
-    creature.owner = "enemy";
-
-    // this.state.players.forEach((value, key) => {
-    //   creature.owner = key; console.log(key);
-    // });
-
-    this.state.creatures.set(creature.id, creature);
-
   }
 
   onJoin(client: Client, options: any) {
@@ -69,7 +34,18 @@ export class gameRoom extends Room<GameRoomState> {
     this.state.networkedUsers.set(client.sessionId, newNetworkedUser);
     client.send("onJoin", newNetworkedUser);
 
-    this.state.creatures.get("1").owner = client.sessionId;
+    let creature = CreatureFactory["Mousy"]("1", client.sessionId);
+    this.state.creatures.set(creature.id, creature);
+    this.state.board[11] = creature.id;
+
+    creature = CreatureFactory["Hell Mousy"]("2", client.sessionId);
+    this.state.creatures.set(creature.id, creature);
+    this.state.board[0] = creature.id;
+
+    creature = CreatureFactory["Hell Mousy"]("3", "enemy");
+    this.state.creatures.set(creature.id, creature);
+    this.state.board[5] = creature.id;
+
 
     if (this.state.players.size === 1) {
       this.state.currentTurn = client.sessionId;

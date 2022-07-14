@@ -63,6 +63,7 @@ public class GameRoomController : MonoBehaviour
 
         _room.State.creatures.OnAdd += OnCreatureAdd;
         _room.State.board.OnChange += OnBoardChange;
+        _room.State.graveyard.OnAdd += OnGraveyardAdd;
 
         _room.colyseusConnection.OnError += Room_OnError;
         _room.colyseusConnection.OnClose += Room_OnClose;
@@ -117,6 +118,15 @@ public class GameRoomController : MonoBehaviour
     {
         //Debug.Log(schema.id);
         //GameObject.FindObjectOfType<Creature>().Initialize(schema);
+    }
+
+    private void OnGraveyardAdd(int index, string value)
+    {
+        if (value != "")
+        {
+            var creature = _creatures[value];
+            creature.gameObject.SetActive(false);
+        }
     }
 
     private static void Room_OnClose(int closeCode)
