@@ -15,13 +15,14 @@ public class CreaturePanel : MonoBehaviour
         }
 
         _gameRoomController.OnCreatureSelected += OnCreatureSelected;
+        _gameRoomController.OnTurnChanged += OnTurnChanged;
     }
     private void OnCreatureSelected(Creature creature)
     {
         for (int i = 0; i < _actionButtons.Length; i++)
         {
             var button = _actionButtons[i];
-            if (creature != null && i < creature.Abilities.Count)
+            if (creature != null && !creature.IsEnemy && i < creature.Abilities.Count)
             {
                 button.Initialize(creature.Abilities[i]);
                 button.gameObject.SetActive(true);
@@ -32,6 +33,13 @@ public class CreaturePanel : MonoBehaviour
             }
         }
 
+    }
+    private void OnTurnChanged(bool isEnemyTurn)
+    {
+        foreach (var button in _actionButtons)
+        {
+            button.SetInteractable(!isEnemyTurn);
+        }
     }
 
 

@@ -14,7 +14,7 @@ public class Creature : MonoBehaviour
     public string Owner { get; private set; }
 
     public List<AbilitySchema> Abilities { get; private set; } = new List<AbilitySchema>();
-    private bool _isEnemy;
+    public bool IsEnemy { get; private set; }
     private IEnumerator _waitForUpdate;
 
     private void Start()
@@ -29,7 +29,7 @@ public class Creature : MonoBehaviour
 
         ID = schema.id;
         Owner = schema.owner;
-        _isEnemy = isEnemy;
+        IsEnemy = isEnemy;
 
         for (int i = 0; i < schema.abilities.Count; i++)
         {

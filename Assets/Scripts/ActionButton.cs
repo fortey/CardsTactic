@@ -29,4 +29,9 @@ public class ActionButton : MonoBehaviour
                 return string.Empty;
         }
     }
+
+    public void SetInteractable(bool interactable)
+    {
+        _button.interactable = interactable;
+    }
 }

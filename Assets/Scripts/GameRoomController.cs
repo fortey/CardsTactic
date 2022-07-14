@@ -5,16 +5,19 @@ using Colyseus;
 using GameDevWare.Serialization;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.UI;
 
 public class GameRoomController : MonoBehaviour
 {
     public event Action<Creature> OnCreatureSelected;
+    public event Action<bool> OnTurnChanged;
     private ColyseusRoom<GameRoomState> _room;
     private string _lastRoomId;
     private ColyseusClient _client;
 
     [SerializeField] private Board _board;
     [SerializeField] private Creature _creaturePrefab;
+    [SerializeField] private Button _passButton;
 
     [SerializeField] private static NetworkedUser _currentNetworkedUser;
 
@@ -24,6 +27,7 @@ public class GameRoomController : MonoBehaviour
     private Creature _selectedCreature;
     private string _selectedAction = "";
     private int[] _availableTargetCells;
+    private bool _myTurn;
     private void Start()
     {
         _board.OnCellClick += CellClickHandler;
@@ -48,6 +52,7 @@ public class GameRoomController : MonoBehaviour
     private void RegisterRoomHandlers()
     {
         _room.OnStateChange += OnStateChangeHandler;
+        _room.State.OnChange += OnStateChange;
 
         _room.OnMessage<NetworkedUser>("onJoin", currentNetworkedUser =>
         {
@@ -55,6 +60,7 @@ public class GameRoomController : MonoBehaviour
             Debug.Log(Json.SerializeToString(currentNetworkedUser));
 
             _currentNetworkedUser = currentNetworkedUser;
+            ChangeTurn();
         });
 
         _room.OnMessage<object>("start", StartGame);
@@ -84,6 +90,7 @@ public class GameRoomController : MonoBehaviour
         _room.colyseusConnection.OnClose -= Room_OnClose;
 
         _room.OnStateChange -= OnStateChangeHandler;
+        _room.State.OnChange -= OnStateChange;
         _room.State.board.OnChange -= OnBoardChange;
 
         //_room.OnLeave -= OnLeaveRoom;
@@ -98,6 +105,18 @@ public class GameRoomController : MonoBehaviour
         // Setup room first state
         //LSLog.LogImportant("State has been updated!");
         Debug.Log("state changed" + isFirstState);
+
+    }
+
+    private void OnStateChange(List<Colyseus.Schema.DataChange> changes)
+    {
+        foreach (var change in changes)
+        {
+            if (change.Field == "currentTurn" && _currentNetworkedUser != null)
+            {
+                ChangeTurn();
+            }
+        }
     }
 
     private void OnBoardChange(int index, string value)
@@ -140,6 +159,7 @@ public class GameRoomController : MonoBehaviour
         Debug.Log("Room_OnError: " + errorMsg);
     }
 
+    private void OnCurrentTurnChanged() { }
 
     #endregion
 
@@ -193,7 +213,7 @@ public class GameRoomController : MonoBehaviour
                 _board[index].SetSelected();
                 OnCreatureSelected?.Invoke(creature);
 
-                if (creature.Owner == _currentNetworkedUser.sessionId)
+                if (creature.Owner == _currentNetworkedUser.sessionId && _myTurn)
                 {
                     _room.Send("select_cell", index);
                     //_currentCellIndex = index;
@@ -286,5 +306,35 @@ public class GameRoomController : MonoBehaviour
     {
         if (_selectedCreature)
             _board[GetCellIndex(_selectedCreature.ID)].SetSelected();
+    }
+
+    public void Pass()
+    {
+        _room.Send("pass");
+    }
+
+    private void OnDisable()
+    {
+        ClearRoomHandlers();
+    }
+
+    private void ChangeTurn()
+    {
+        _myTurn = _room.State.currentTurn == _currentNetworkedUser.sessionId;
+        OnTurnChanged?.Invoke(!_myTurn);
+        _passButton.interactable = _myTurn;
+
+        ClearTargetCreatures();
+        _board.ClearCells();
+        UpdateSelectedCell();
+        if (_myTurn)
+        {
+            if (_selectedCreature && !_selectedCreature.IsEnemy)
+            {
+                int index = GetCellIndex(_selectedCreature.ID);
+                if (index > -1)
+                    _room.Send("select_cell", index);
+            }
+        }
     }
 }

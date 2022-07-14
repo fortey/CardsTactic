@@ -20,6 +20,7 @@ export class gameRoom extends Room<GameRoomState> {
     this.onMessage("move", (client, message) => this.onMove(client, message));
     this.onMessage("ability_clicked", (client, message) => this.onAbilityClicked(client, message));
     this.onMessage("action", (client, message) => this.onAction(client, message));
+    this.onMessage("pass", (client, message) => this.pass(client));
 
   }
 
@@ -114,12 +115,22 @@ export class gameRoom extends Room<GameRoomState> {
     }
   }
 
+
+  pass(client: Client) {
+    if (this.state.currentTurn !== client.sessionId) return;
+
+    const playerIds = Array.from(this.state.players.keys());
+    this.state.currentTurn = (client.sessionId === playerIds[0]) ? playerIds[1] : playerIds[0];
+
+    this.setAutoMoveTimeout();
+  }
+
   setAutoMoveTimeout() {
     if (this.randomMoveTimeout) {
       this.randomMoveTimeout.clear();
     }
 
-    //this.randomMoveTimeout = this.clock.setTimeout(() => this.doRandomMove(), TURN_TIMEOUT * 1000);
+    this.randomMoveTimeout = this.clock.setTimeout(() => this.pass({ sessionId: this.state.currentTurn } as Client), TURN_TIMEOUT * 1000);
   }
 
   checkBoardComplete() {
