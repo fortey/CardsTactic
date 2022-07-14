@@ -22,7 +22,7 @@ public class GameRoomController : MonoBehaviour
     //private int _currentCellIndex = -1;
     private int[] _availableToMoveCells;
     private Creature _selectedCreature;
-    private string _selectedAction;
+    private string _selectedAction = "";
     private int[] _availableTargetCells;
     private void Start()
     {
@@ -111,6 +111,7 @@ public class GameRoomController : MonoBehaviour
             {
                 _room.Send("select_cell", index);
             }
+            UpdateSelectedCell();
         }
     }
 
@@ -158,6 +159,7 @@ public class GameRoomController : MonoBehaviour
     {
         _board.ClearCells();
         _board.SetAvailableCells(cells);
+        UpdateSelectedCell();
         _availableToMoveCells = cells;
     }
 
@@ -188,6 +190,7 @@ public class GameRoomController : MonoBehaviour
                 var creature = _creatures[creatureID];
 
                 _selectedCreature = creature;
+                _board[index].SetSelected();
                 OnCreatureSelected?.Invoke(creature);
 
                 if (creature.Owner == _currentNetworkedUser.sessionId)
@@ -277,5 +280,11 @@ public class GameRoomController : MonoBehaviour
         {
             creature.Value.SetTarget(false);
         }
+    }
+
+    private void UpdateSelectedCell()
+    {
+        if (_selectedCreature)
+            _board[GetCellIndex(_selectedCreature.ID)].SetSelected();
     }
 }
