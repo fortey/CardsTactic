@@ -77,6 +77,9 @@ public class Creature : MonoBehaviour
             {
                 case ("health"):
                     _healthLabel.text = changed.Value.ToString();
+                    var difference = (float)changed.Value - (float)changed.PreviousValue;
+                    var color = difference < 0 ? Color.red : Color.green;
+                    ShowPopupText(color, difference);
                     break;
                 default:
                     print(changed.Field);
@@ -84,5 +87,11 @@ public class Creature : MonoBehaviour
             }
         }
 
+    }
+
+    private void ShowPopupText(Color color, float value)
+    {
+        var popup = Global.Instance.PopupTextPool.Get();
+        popup.GetComponent<PopupText>().Play(transform.position, color, value.ToString());
     }
 }

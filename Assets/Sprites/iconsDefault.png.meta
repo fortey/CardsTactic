@@ -5179,7 +5179,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: iconsDefault_241
+      name: arrow
       rect:
         serializedVersion: 2
         x: 262
@@ -5188,7 +5188,7 @@ TextureImporter:
         height: 26
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 4, y: 0, z: 17, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -7471,7 +7471,6 @@ TextureImporter:
       iconsDefault_28: -411713609
       iconsDefault_177: -316846704
       iconsDefault_220: -1216651306
-      iconsDefault_241: 475236617
       iconsDefault_89: -299669106
       iconsDefault_185: -1714859699
       iconsDefault_315: 675398294
@@ -7538,6 +7537,7 @@ TextureImporter:
       iconsDefault_311: -385694777
       iconsDefault_7: 971793176
       iconsDefault_125: 160498095
+      arrow: 475236617
       iconsDefault_226: 494056045
       iconsDefault_198: -479274470
       iconsDefault_84: -33409819

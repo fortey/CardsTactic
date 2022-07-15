@@ -12,7 +12,8 @@ public class Global : Singleton<Global>
     public Material AllyCardMaterial { get => Variables.allyCardMaterial; }
     public Material EnemyCardMaterial { get => Variables.enemyCardMaterial; }
 
-    public Pool<PopupText> PopupTextPool;
+    public Pool PopupTextPool;
+    public Pool ArrowPool;
 
     public override void Awake()
     {

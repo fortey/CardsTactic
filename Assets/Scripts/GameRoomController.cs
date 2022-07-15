@@ -17,6 +17,7 @@ public class GameRoomController : MonoBehaviour
 
     [SerializeField] private Board _board;
     [SerializeField] private Creature _creaturePrefab;
+    [SerializeField] private Transform _creaturesParent;
     [SerializeField] private Button _passButton;
 
     [SerializeField] private static NetworkedUser _currentNetworkedUser;
@@ -104,7 +105,7 @@ public class GameRoomController : MonoBehaviour
     {
         // Setup room first state
         //LSLog.LogImportant("State has been updated!");
-        Debug.Log("state changed" + isFirstState);
+        //Debug.Log("state changed" + isFirstState);
 
     }
 
@@ -121,7 +122,6 @@ public class GameRoomController : MonoBehaviour
 
     private void OnBoardChange(int index, string value)
     {
-        Debug.Log($"board {index} - {value}");
         if (value != "")
         {
             var creature = _creatures[value];
@@ -268,7 +268,7 @@ public class GameRoomController : MonoBehaviour
         var creatureID = _room.State.board[boardIndex];
         var creatureSchema = _room.State.creatures[creatureID];
 
-        var creature = Instantiate(_creaturePrefab, _board[boardIndex].transform.position, Quaternion.identity, transform);
+        var creature = Instantiate(_creaturePrefab, _board[boardIndex].transform.position, Quaternion.identity, _creaturesParent);
         creature.Initialize(creatureSchema, creatureSchema.owner != _currentNetworkedUser.sessionId);
 
         _creatures[creatureID] = creature;

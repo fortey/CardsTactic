@@ -2,30 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pool<T> : MonoBehaviour where T : MonoBehaviour
+public class Pool : MonoBehaviour
 {
-    [SerializeField] private T _prefab;
+    [SerializeField] private GameObject _prefab;
 
-    [SerializeField] private List<T> _pool = new List<T>();
+    private List<GameObject> _pool = new List<GameObject>();
 
-    public T Get()
+    public GameObject Get()
     {
         if (_pool.Count == 0)
         {
-            return Instantiate<T>(_prefab, this.transform);
+            var go = Instantiate(_prefab, this.transform);
+            go.SetActive(true);
+            return go;
         }
         else
         {
-            var ob = _pool[0];
+            var go = _pool[0];
             _pool.RemoveAt(0);
-            ob.gameObject.SetActive(true);
-            return ob;
+            go.SetActive(true);
+            return go;
         }
     }
 
-    public void Push(T ob)
+    public void Push(GameObject go)
     {
-        ob.gameObject.SetActive(false);
-        _pool.Add(ob);
+        go.SetActive(false);
+        _pool.Add(go);
     }
 }

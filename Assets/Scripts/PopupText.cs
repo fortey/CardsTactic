@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PopupText : MonoBehaviour
 {
-    [SerializeField] private TextMeshPro _text;
+    [SerializeField] private TextMeshProUGUI _text;
     [SerializeField] private float _time;
     [SerializeField] private float _speed;
 
@@ -29,6 +29,6 @@ public class PopupText : MonoBehaviour
             transform.position = position;
             yield return null;
         }
-        Global.Instance.PopupTextPool.Push(this);
+        Global.Instance.PopupTextPool.Push(gameObject);
     }
 }
