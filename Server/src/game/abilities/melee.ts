@@ -10,10 +10,11 @@ melee.onClicked = function (cell: number, source: CreatureSchema, state: GameRoo
 melee.invoke = function (cellSource: number, source: CreatureSchema, state: GameRoomState, board: Board, cellTarget: number) {
     const targetID = state.board[cellTarget];
     const target = state.creatures.get(targetID);
-    if (target == undefined) return;
+    if (target == undefined) return false;
     const ability = source.abilities.find(ability => ability.name == "melee");
-    if (ability == undefined) return;
+    if (ability == undefined) return false;
 
     //target.health -= ability.values[0];
     this.damage(cellTarget, target, state, ability.values[0]);
+    return true;
 };

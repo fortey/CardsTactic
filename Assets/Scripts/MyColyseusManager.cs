@@ -6,6 +6,7 @@ using UnityEngine;
 public class MyColyseusManager : ColyseusManager<MyColyseusManager>
 {
     [SerializeField] private GameRoomController _roomController;
+    [SerializeField] private ArenaRoomController _arenaController;
     private ColyseusRoom<GameRoomState> _room;
     protected override void Start()
     {
@@ -21,7 +22,7 @@ public class MyColyseusManager : ColyseusManager<MyColyseusManager>
 
         InitializeClient();
 
-        _roomController.JoinOrCreateRoom(client, roomOptions);
+        _arenaController.JoinOrCreateRoom(client, roomOptions);
     }
     public override void InitializeClient()
     {

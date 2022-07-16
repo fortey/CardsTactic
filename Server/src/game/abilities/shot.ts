@@ -13,13 +13,14 @@ shot.onClicked = function (cell: number, source: CreatureSchema, state: GameRoom
 shot.invoke = function (cellSource: number, source: CreatureSchema, state: GameRoomState, board: Board, cellTarget: number) {
     const targetID = state.board[cellTarget];
     const target = state.creatures.get(targetID);
-    if (target == undefined) return;
+    if (target == undefined) return false;
     const ability = source.abilities.find(ability => ability.name == this.name);
-    if (ability == undefined) return;
+    if (ability == undefined) return false;
 
     const targets = board.targetsInRange(state.board, cellSource, ability.values[0], ability.values[1]);
-    if (targets.indexOf(cellTarget) == -1) return;
+    if (targets.indexOf(cellTarget) == -1) return false;
 
     //target.health -= ability.values[2];
     this.damage(cellTarget, target, state, ability.values[2]);
+    return true;
 };

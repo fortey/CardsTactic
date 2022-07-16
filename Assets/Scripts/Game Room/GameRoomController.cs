@@ -67,6 +67,7 @@ public class GameRoomController : MonoBehaviour
         _room.OnMessage<object>("start", StartGame);
         _room.OnMessage<int[]>("available_cells", onAvailableCells);
         _room.OnMessage<int[]>("available_targets", OnAvailableTargets);
+        _room.OnMessage<int[]>("action", OnAction);
 
         _room.State.creatures.OnAdd += OnCreatureAdd;
         _room.State.board.OnChange += OnBoardChange;
@@ -193,6 +194,13 @@ public class GameRoomController : MonoBehaviour
                 creature.SetTarget(true);
         }
     }
+
+    private void OnAction(int[] cells)
+    {
+        var arrow = Global.Instance.ArrowPool.Get();
+        arrow.GetComponent<Arrow>().Show(_board[cells[0]].transform.position, _board[cells[1]].transform.position);
+    }
+
     #endregion
 
     private void CellClickHandler(int index)

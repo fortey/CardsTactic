@@ -1,8 +1,9 @@
 import { Room, Client, Delayed } from "colyseus";
-import { GameRoomState, CreatureSchema, NetworkedUser, AbilitySchema } from "./schema/GameRoomState";
+import { GameRoomState } from "./schema/GameRoomState";
 import { Board } from "../game/board";
 import { abilities } from "../game/abilities/abilities";
 import { CreatureFactory } from "../game/creatureFactory";
+import { NetworkedUser } from "./schema/NetworkedUser";
 
 const TURN_TIMEOUT = 10
 const BOARD_WIDTH = 5;
@@ -62,6 +63,7 @@ export class gameRoom extends Room<GameRoomState> {
 
   onLeave(client: Client, consented: boolean) {
     this.state.players.delete(client.sessionId);
+    this.state.networkedUsers.delete(client.sessionId);
 
     if (this.randomMoveTimeout) {
       this.randomMoveTimeout.clear()
@@ -84,9 +86,6 @@ export class gameRoom extends Room<GameRoomState> {
     }
 
     if (client.sessionId === this.state.currentTurn) {
-
-      const orc = this.state.creatures.get("1");
-      orc.health--;
 
       const playerIds = Array.from(this.state.players.keys());
 
@@ -241,7 +240,9 @@ export class gameRoom extends Room<GameRoomState> {
     const creature = this.state.creatures.get(creatureID);
 
     if (creature != null && creature.owner === client.sessionId) {
-      abilities[action].invoke(cellSource, creature, this.state, this.board, cellTarget);
+      if (abilities[action].invoke(cellSource, creature, this.state, this.board, cellTarget)) {
+        this.broadcast("action", [cellSource, cellTarget]);
+      }
     }
   }
 }

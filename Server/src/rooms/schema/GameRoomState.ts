@@ -1,4 +1,5 @@
 import { Schema, Context, type, MapSchema, ArraySchema } from "@colyseus/schema";
+import { NetworkedUser } from "./NetworkedUser";
 
 export class AbilitySchema extends Schema {
   @type("string") name: string;
@@ -15,13 +16,7 @@ export class CreatureSchema extends Schema {
   @type([AbilitySchema]) abilities = new ArraySchema<AbilitySchema>();
 }
 
-export class NetworkedUser extends Schema {
-  @type("string") id: string;
-  @type("string") sessionId: string;
-  @type("boolean") connected: boolean;
-  // @type("number") timestamp: number;
-  @type({ map: "string" }) attributes = new MapSchema<string>();
-}
+
 
 export class GameRoomState extends Schema {
 

@@ -18,7 +18,7 @@ public class Arrow : MonoBehaviour
         _transform.eulerAngles = new Vector3(0, 0, n);
         _transform.sizeDelta = new Vector2(distance, _transform.sizeDelta.y);
 
-        Invoke(nameof(ReturnToPool), 1f);
+        Invoke(nameof(ReturnToPool), 0.5f);
     }
 
     private void ReturnToPool()

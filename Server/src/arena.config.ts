@@ -1,5 +1,6 @@
 import Arena from "@colyseus/arena";
 import { monitor } from "@colyseus/monitor";
+import { ArenaRoom } from "./rooms/arenaRoom";
 
 /**
  * Import your Room files
@@ -15,7 +16,7 @@ export default Arena({
          * Define your room handlers:
          */
         gameServer.define('game_room', gameRoom);
-        gameServer.define('tictactoe', TicTacToe);
+        gameServer.define('arena_room', ArenaRoom);
 
     },
 

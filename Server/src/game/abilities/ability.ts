@@ -4,7 +4,7 @@ import { Board } from "../board";
 export class Ability {
     name: string;
     onClicked(cell: number, source: CreatureSchema, state: GameRoomState, board: Board, sendTargets: any) { }
-    invoke(cellSource: number, source: CreatureSchema, state: GameRoomState, board: Board, cellTarget: number) { }
+    invoke(cellSource: number, source: CreatureSchema, state: GameRoomState, board: Board, cellTarget: number): boolean { return true; }
 
     damage(cell: number, creature: CreatureSchema, state: GameRoomState, damage: number) {
         creature.health -= damage;
