@@ -1,5 +1,6 @@
 import Arena from "@colyseus/arena";
 import { monitor } from "@colyseus/monitor";
+import { LobbyRoom } from "colyseus";
 import { ArenaRoom } from "./rooms/arenaRoom";
 
 /**
@@ -15,8 +16,8 @@ export default Arena({
         /**
          * Define your room handlers:
          */
-        gameServer.define('game_room', gameRoom);
-        gameServer.define('arena_room', ArenaRoom);
+        gameServer.define('game_room', gameRoom).enableRealtimeListing();
+        gameServer.define('arena_lobby', LobbyRoom);
 
     },
 

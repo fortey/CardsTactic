@@ -6,7 +6,7 @@ using UnityEngine;
 public class MyColyseusManager : ColyseusManager<MyColyseusManager>
 {
     [SerializeField] private GameRoomController _roomController;
-    [SerializeField] private ArenaRoomController _arenaController;
+    [SerializeField] private ArenaLobbyController _arenaController;
     private ColyseusRoom<GameRoomState> _room;
     protected override void Start()
     {
@@ -43,4 +43,5 @@ public class MyColyseusManager : ColyseusManager<MyColyseusManager>
 
         _room.State.creatures.OnAdd += (id, creature) => print(creature);
     }
+
 }

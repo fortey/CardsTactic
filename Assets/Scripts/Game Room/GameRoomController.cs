@@ -50,6 +50,22 @@ public class GameRoomController : MonoBehaviour
         }
     }
 
+    public async void JoinRoom(ColyseusClient client, string roomID, Dictionary<string, object> options)
+    {
+        _client = client;
+        try
+        {
+            _room = await client.JoinById<GameRoomState>(roomID, options);
+
+            _lastRoomId = _room.Id;
+            RegisterRoomHandlers();
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e.Message);
+        }
+    }
+
     private void RegisterRoomHandlers()
     {
         _room.OnStateChange += OnStateChangeHandler;
@@ -150,12 +166,13 @@ public class GameRoomController : MonoBehaviour
         }
     }
 
-    private static void Room_OnClose(int closeCode)
+    private void Room_OnClose(int closeCode)
     {
         Debug.Log("Room_OnClose: " + closeCode);
+        _room = null;
     }
 
-    private static void Room_OnError(string errorMsg)
+    private void Room_OnError(string errorMsg)
     {
         Debug.Log("Room_OnError: " + errorMsg);
     }
@@ -344,5 +361,11 @@ public class GameRoomController : MonoBehaviour
                     _room.Send("select_cell", index);
             }
         }
+    }
+
+    private void OnApplicationQuit()
+    {
+        if (_room != null) _room.Leave();
+        ClearRoomHandlers();
     }
 }

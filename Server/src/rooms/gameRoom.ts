@@ -36,22 +36,29 @@ export class gameRoom extends Room<GameRoomState> {
     this.state.networkedUsers.set(client.sessionId, newNetworkedUser);
     client.send("onJoin", newNetworkedUser);
 
-    let creature = CreatureFactory["Mousy"]("1", client.sessionId);
-    this.state.creatures.set(creature.id, creature);
-    this.state.board[11] = creature.id;
-
-    creature = CreatureFactory["Hell Mousy"]("2", client.sessionId);
-    this.state.creatures.set(creature.id, creature);
-    this.state.board[0] = creature.id;
-
-    creature = CreatureFactory["Hell Mousy"]("3", "enemy");
-    this.state.creatures.set(creature.id, creature);
-    this.state.board[5] = creature.id;
 
 
-    if (this.state.players.size === 1) {
+    if (this.state.players.size === 2) {
       this.state.currentTurn = client.sessionId;
       this.setAutoMoveTimeout();
+
+      const playerIds = Array.from(this.state.players.keys());
+
+      let creature = CreatureFactory["Hell Mousy"]("3", playerIds[0]);
+      this.state.creatures.set(creature.id, creature);
+      this.state.board[0] = creature.id;
+
+      creature = CreatureFactory["Mousy"]("1", playerIds[0]);
+      this.state.creatures.set(creature.id, creature);
+      this.state.board[1] = creature.id;
+
+      creature = CreatureFactory["Mousy"]("1", playerIds[0]);
+      this.state.creatures.set(creature.id, creature);
+      this.state.board[18] = creature.id;
+
+      creature = CreatureFactory["Hell Mousy"]("2", playerIds[0]);
+      this.state.creatures.set(creature.id, creature);
+      this.state.board[19] = creature.id;
 
       // lock this room for new users
       this.lock();
