@@ -2641,7 +2641,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0863dde367fec4a42900240765de5bb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _colyseusSettings: {fileID: 11400000, guid: 53191fc351489324ea00106b7cb0fb03, type: 2}
+  _colyseusSettings: {fileID: 11400000, guid: 1f6d3df7b73b7674189f30eb09aa23cb, type: 2}
   _roomController: {fileID: 1609333081}
   _arenaController: {fileID: 415654276}
 --- !u!4 &1038416919

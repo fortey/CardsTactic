@@ -42,28 +42,29 @@ export class gameRoom extends Room<GameRoomState> {
       this.state.currentTurn = client.sessionId;
       this.setAutoMoveTimeout();
 
+      this.lock();
+
+
+
       const playerIds = Array.from(this.state.players.keys());
 
       let creature = CreatureFactory["Hell Mousy"]("3", playerIds[0]);
       this.state.creatures.set(creature.id, creature);
       this.state.board[0] = creature.id;
 
-      creature = CreatureFactory["Mousy"]("1", playerIds[0]);
+      creature = CreatureFactory["Mousy"]("4", playerIds[0]);
       this.state.creatures.set(creature.id, creature);
       this.state.board[1] = creature.id;
 
-      creature = CreatureFactory["Mousy"]("1", playerIds[0]);
+      creature = CreatureFactory["Mousy"]("1", playerIds[1]);
       this.state.creatures.set(creature.id, creature);
       this.state.board[18] = creature.id;
 
-      creature = CreatureFactory["Hell Mousy"]("2", playerIds[0]);
+      creature = CreatureFactory["Hell Mousy"]("2", playerIds[1]);
       this.state.creatures.set(creature.id, creature);
       this.state.board[19] = creature.id;
 
-      // lock this room for new users
-      this.lock();
-
-      client.send("start");
+      this.broadcast("start");
     }
     console.log(client.sessionId, "joined!");
   }

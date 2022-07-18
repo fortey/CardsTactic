@@ -29,6 +29,8 @@ public class GameRoomController : MonoBehaviour
     private string _selectedAction = "";
     private int[] _availableTargetCells;
     private bool _myTurn;
+
+    private bool _isStarted;
     private void Start()
     {
         _board.OnCellClick += CellClickHandler;
@@ -139,7 +141,8 @@ public class GameRoomController : MonoBehaviour
 
     private void OnBoardChange(int index, string value)
     {
-        if (value != "")
+        print(_isStarted);
+        if (value != "" && _isStarted)
         {
             var creature = _creatures[value];
             creature.Move(_board[index].transform.position);
@@ -155,6 +158,13 @@ public class GameRoomController : MonoBehaviour
     {
         //Debug.Log(schema.id);
         //GameObject.FindObjectOfType<Creature>().Initialize(schema);
+
+        var creature = Instantiate(_creaturePrefab, transform.position, Quaternion.identity, _creaturesParent);
+        creature.Initialize(schema, schema.owner != _currentNetworkedUser.sessionId);
+
+        _creatures[id] = creature;
+
+        schema.OnChange += creature.OnStateChanged;
     }
 
     private void OnGraveyardAdd(int index, string value)
@@ -184,6 +194,8 @@ public class GameRoomController : MonoBehaviour
     #region Server messages
     private void StartGame(object message)
     {
+        print("start");
+        _isStarted = true;
         for (int i = 0; i < _room.State.board.Count; i++)
         {
             if (_room.State.board[i] != "")
