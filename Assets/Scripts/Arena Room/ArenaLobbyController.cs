@@ -15,6 +15,7 @@ public class ArenaLobbyController : MonoBehaviour
     [SerializeField] private static NetworkedUser _currentNetworkedUser;
 
     [SerializeField] private Pool _roomItemsPool;
+    public bool Bot { get; set; }
 
     public async void JoinOrCreateRoom(ColyseusClient client, Dictionary<string, object> options)
     {
@@ -77,10 +78,11 @@ public class ArenaLobbyController : MonoBehaviour
         Dictionary<string, object> roomOptions = new Dictionary<string, object>
         {
             ["logic"] = "shootingGallery", //The name of our custom logic file
-            ["minReqPlayers"] = 1
+            ["minReqPlayers"] = 2,
+            ["bot"] = Bot
         };
         _gameRoomController.gameObject.SetActive(true);
-        _gameRoomController.JoinOrCreateRoom(_client, roomOptions);
+        _gameRoomController.CreateRoom(_client, roomOptions);
     }
 
     private void JoinRoom(string roomID)

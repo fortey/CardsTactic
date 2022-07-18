@@ -13,6 +13,7 @@ export class gameRoom extends Room<GameRoomState> {
   maxClients = 2;
   randomMoveTimeout: Delayed;
   board = new Board();
+  bot = false;
 
   onCreate(options: any) {
     this.setState(new GameRoomState());
@@ -23,6 +24,7 @@ export class gameRoom extends Room<GameRoomState> {
     this.onMessage("action", (client, message) => this.onAction(client, message));
     this.onMessage("pass", (client, message) => this.pass(client));
 
+    this.bot = options["bot"];
   }
 
   onJoin(client: Client, options: any) {
@@ -36,15 +38,15 @@ export class gameRoom extends Room<GameRoomState> {
     this.state.networkedUsers.set(client.sessionId, newNetworkedUser);
     client.send("onJoin", newNetworkedUser);
 
-
+    if (this.bot) {
+      this.state.players.set("bot", true);
+    }
 
     if (this.state.players.size === 2) {
       this.state.currentTurn = client.sessionId;
       this.setAutoMoveTimeout();
 
       this.lock();
-
-
 
       const playerIds = Array.from(this.state.players.keys());
 
@@ -136,8 +138,8 @@ export class gameRoom extends Room<GameRoomState> {
     if (this.randomMoveTimeout) {
       this.randomMoveTimeout.clear();
     }
-
-    this.randomMoveTimeout = this.clock.setTimeout(() => this.pass({ sessionId: this.state.currentTurn } as Client), TURN_TIMEOUT * 1000);
+    const timeout = (this.state.currentTurn === "bot" ? 1 : TURN_TIMEOUT) * 1000;
+    this.randomMoveTimeout = this.clock.setTimeout(() => this.pass({ sessionId: this.state.currentTurn } as Client), timeout);
   }
 
   checkBoardComplete() {
@@ -250,6 +252,7 @@ export class gameRoom extends Room<GameRoomState> {
     if (creature != null && creature.owner === client.sessionId) {
       if (abilities[action].invoke(cellSource, creature, this.state, this.board, cellTarget)) {
         this.broadcast("action", [cellSource, cellTarget]);
+        this.pass(client);
       }
     }
   }

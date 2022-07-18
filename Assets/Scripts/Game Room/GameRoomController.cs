@@ -36,7 +36,7 @@ public class GameRoomController : MonoBehaviour
         _board.OnCellClick += CellClickHandler;
     }
 
-    public async void JoinOrCreateRoom(ColyseusClient client, Dictionary<string, object> options)
+    public async void CreateRoom(ColyseusClient client, Dictionary<string, object> options)
     {
         _client = client;
         try
@@ -156,6 +156,7 @@ public class GameRoomController : MonoBehaviour
 
     private void OnCreatureAdd(string id, CreatureSchema schema)
     {
+        if (_currentNetworkedUser == null) return;
         //Debug.Log(schema.id);
         //GameObject.FindObjectOfType<Creature>().Initialize(schema);
 
