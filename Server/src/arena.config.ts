@@ -1,13 +1,11 @@
 import Arena from "@colyseus/arena";
 import { monitor } from "@colyseus/monitor";
 import { LobbyRoom } from "colyseus";
-import { ArenaRoom } from "./rooms/arenaRoom";
 
 /**
  * Import your Room files
  */
 import { gameRoom } from "./rooms/gameRoom";
-import { TicTacToe } from "./rooms/tictactoe";
 
 export default Arena({
     getId: () => "Your Colyseus App",
