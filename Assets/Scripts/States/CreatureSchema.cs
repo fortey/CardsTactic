@@ -21,12 +21,21 @@ public partial class CreatureSchema : Schema {
 	public bool active = default(bool);
 
 	[Type(4, "number")]
+	public float maxHealth = default(float);
+
+	[Type(5, "number")]
 	public float health = default(float);
 
-	[Type(5, "array", typeof(ArraySchema<string>), "string")]
+	[Type(6, "number")]
+	public float steps = default(float);
+
+	[Type(7, "number")]
+	public float maxSteps = default(float);
+
+	[Type(8, "array", typeof(ArraySchema<string>), "string")]
 	public ArraySchema<string> attributes = new ArraySchema<string>();
 
-	[Type(6, "array", typeof(ArraySchema<AbilitySchema>))]
+	[Type(9, "array", typeof(ArraySchema<AbilitySchema>))]
 	public ArraySchema<AbilitySchema> abilities = new ArraySchema<AbilitySchema>();
 }
 

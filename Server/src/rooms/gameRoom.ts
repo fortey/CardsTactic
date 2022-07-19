@@ -14,6 +14,8 @@ export class gameRoom extends Room<GameRoomState> {
   randomMoveTimeout: Delayed;
   board = new Board();
   bot = false;
+  maxPass = 2;
+  passes = new Map<string, number>();
 
   onCreate(options: any) {
     this.setState(new GameRoomState());
@@ -38,8 +40,11 @@ export class gameRoom extends Room<GameRoomState> {
     this.state.networkedUsers.set(client.sessionId, newNetworkedUser);
     client.send("onJoin", newNetworkedUser);
 
+    this.passes.set(client.sessionId, this.maxPass);
+
     if (this.bot) {
       this.state.players.set("bot", true);
+      this.passes.set("bot", this.maxPass);
     }
 
     if (this.state.players.size === 2) {
@@ -129,6 +134,13 @@ export class gameRoom extends Room<GameRoomState> {
     if (this.state.currentTurn !== client.sessionId) return;
 
     const playerIds = Array.from(this.state.players.keys());
+
+    if (this.passes.get(client.sessionId) == 0) {
+      this.EndTurn();
+      return;
+    }
+
+    this.passes.set(client.sessionId, this.passes.get(client.sessionId) - 1);
     this.state.currentTurn = (client.sessionId === playerIds[0]) ? playerIds[1] : playerIds[0];
 
     this.setAutoMoveTimeout();
@@ -211,7 +223,7 @@ export class gameRoom extends Room<GameRoomState> {
 
     const creatureID = this.state.board[cell];
     const creature = this.state.creatures.get(creatureID);
-    if (creature != null && creature.owner === client.sessionId) {
+    if (creature != null && creature.owner === client.sessionId && creature.active && creature.steps > 0) {
       client.send("available_cells", this.board.availableCellsForMove(this.state.board, cell));
     }
   }
@@ -220,11 +232,12 @@ export class gameRoom extends Room<GameRoomState> {
 
     const creatureID = this.state.board[data[0]];
     const creature = this.state.creatures.get(creatureID);
-    if (creature != null && creature.owner === client.sessionId) {
+    if (creature != null && creature.owner === client.sessionId && creature.active && creature.steps > 0) {
       const available_cells = this.board.availableCellsForMove(this.state.board, data[0]);
       if (available_cells.find(i => i == data[1]) !== undefined) {
         this.state.board[data[0]] = "";
         this.state.board[data[1]] = creatureID;
+        creature.steps--;
       }
     }
   }
@@ -232,7 +245,7 @@ export class gameRoom extends Room<GameRoomState> {
   onAbilityClicked(client: Client, data: any[]) {
     const creatureID = this.state.board[data[0]];
     const creature = this.state.creatures.get(creatureID);
-    if (creature != null && creature.owner === client.sessionId) {
+    if (creature != null && creature.active && creature.owner === client.sessionId) {
       if (abilities[data[1]] !== undefined) {
         abilities[data[1]].onClicked(data[0], creature, this.state, this.board, (targets: number[]) => client.send("available_targets", targets));
       }
@@ -249,11 +262,31 @@ export class gameRoom extends Room<GameRoomState> {
     const creatureID = this.state.board[cellSource];
     const creature = this.state.creatures.get(creatureID);
 
-    if (creature != null && creature.owner === client.sessionId) {
+    if (creature != null && creature.active && creature.owner === client.sessionId) {
       if (abilities[action].invoke(cellSource, creature, this.state, this.board, cellTarget)) {
         this.broadcast("action", [cellSource, cellTarget]);
-        this.pass(client);
+        creature.active = false;
+        if (this.CheckEndTurn())
+          this.EndTurn();
+        else
+          this.pass(client);
       }
     }
+  }
+
+  CheckEndTurn(): boolean {
+    let allInactive = true;
+    this.state.creatures.forEach(creature => {
+      if (creature.active) allInactive = false;
+    });
+    return allInactive;
+  }
+
+  EndTurn() {
+    this.passes.forEach((value, key) => this.passes.set(key, this.maxPass));
+
+    this.state.creatures.forEach(creature => {
+      if (!creature.active) creature.active = true;
+    });
   }
 }

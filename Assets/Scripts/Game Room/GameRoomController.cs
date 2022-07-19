@@ -141,7 +141,6 @@ public class GameRoomController : MonoBehaviour
 
     private void OnBoardChange(int index, string value)
     {
-        print(_isStarted);
         if (value != "" && _isStarted)
         {
             var creature = _creatures[value];
@@ -251,7 +250,7 @@ public class GameRoomController : MonoBehaviour
                 _board[index].SetSelected();
                 OnCreatureSelected?.Invoke(creature);
 
-                if (creature.Owner == _currentNetworkedUser.sessionId && _myTurn)
+                if (creature.Owner == _currentNetworkedUser.sessionId && _myTurn && creature.Active)
                 {
                     _room.Send("select_cell", index);
                     //_currentCellIndex = index;

@@ -8,7 +8,10 @@ export const CreatureFactory = {
         creature.owner = owner;
         creature.name = "Mousy";
         creature.active = true;
+        creature.maxHealth = 10;
         creature.health = 10;
+        creature.maxSteps = 1;
+        creature.steps = creature.maxSteps;
 
         let ability = new AbilitySchema();
         ability.name = "melee";
@@ -33,7 +36,10 @@ export const CreatureFactory = {
         creature.owner = owner;
         creature.name = "Hell Mousy";
         creature.active = true;
+        creature.maxHealth = 10;
         creature.health = 10;
+        creature.maxSteps = 2;
+        creature.steps = creature.maxSteps;
 
         let ability = new AbilitySchema();
         ability.name = "melee";

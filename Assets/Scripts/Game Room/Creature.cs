@@ -9,7 +9,11 @@ public class Creature : MonoBehaviour
     [SerializeField] private Image _image;
     [SerializeField] private TextMeshProUGUI _nameLabel;
     [SerializeField] private TextMeshProUGUI _healthLabel;
+    [SerializeField] private TextMeshProUGUI _stepsLabel;
     [SerializeField] private Image _targetImage;
+    [SerializeField] private GameObject _clock;
+
+    private CreatureSchema _schema;
     public string ID { get; private set; }
     public string Owner { get; private set; }
 
@@ -17,6 +21,7 @@ public class Creature : MonoBehaviour
     public bool IsEnemy { get; private set; }
     private IEnumerator _waitForUpdate;
 
+    public bool Active { get; private set; }
     private void Start()
     {
         _waitForUpdate = new WaitForUpdate();
@@ -24,12 +29,14 @@ public class Creature : MonoBehaviour
 
     public void Initialize(CreatureSchema schema, bool isEnemy)
     {
+        _schema = schema;
         _nameLabel.text = schema.name;
         _image.sprite = Global.Instance.CardSprites[schema.name];
 
         ID = schema.id;
         Owner = schema.owner;
         IsEnemy = isEnemy;
+        Active = schema.active;
 
         for (int i = 0; i < schema.abilities.Count; i++)
         {
@@ -62,6 +69,7 @@ public class Creature : MonoBehaviour
     private void UpdateStats(CreatureSchema schema)
     {
         _healthLabel.text = schema.health.ToString();
+        _stepsLabel.text = $"{schema.steps}/{schema.maxSteps}";
     }
 
     public void SetTarget(bool active)
@@ -81,6 +89,13 @@ public class Creature : MonoBehaviour
                     var color = difference < 0 ? Color.red : Color.green;
                     ShowPopupText(color, difference);
                     break;
+                case ("steps"):
+                    _stepsLabel.text = $"{changed.Value}/{_schema.maxSteps}";
+                    break;
+                case ("active"):
+                    Active = (bool)changed.Value;
+                    ShowClock(!Active);
+                    break;
                 default:
                     print(changed.Field);
                     break;
@@ -93,5 +108,10 @@ public class Creature : MonoBehaviour
     {
         var popup = Global.Instance.PopupTextPool.Get();
         popup.GetComponent<PopupText>().Play(transform.position, color, value.ToString());
+    }
+
+    private void ShowClock(bool show)
+    {
+        _clock.SetActive(show);
     }
 }

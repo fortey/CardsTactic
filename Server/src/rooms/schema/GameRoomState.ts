@@ -11,7 +11,10 @@ export class CreatureSchema extends Schema {
   @type("string") name: string;
   @type("string") owner: string;
   @type("boolean") active: boolean;
+  @type("number") maxHealth: number;
   @type("number") health: number;
+  @type("number") steps: number;
+  @type("number") maxSteps: number;
   @type(["string"]) attributes = new ArraySchema<string>();
   @type([AbilitySchema]) abilities = new ArraySchema<AbilitySchema>();
 }
