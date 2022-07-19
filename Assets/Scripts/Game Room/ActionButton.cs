@@ -14,11 +14,15 @@ public class ActionButton : MonoBehaviour
         _text.text = GetText(abilitySchema);
 
         _button.onClick.RemoveAllListeners();
-        _button.onClick.AddListener(() => onClick?.Invoke(abilitySchema.name));
+
+        var abilityName = abilitySchema != null ? abilitySchema.name : "pass";
+        _button.onClick.AddListener(() => onClick?.Invoke(abilityName));
     }
 
     private string GetText(AbilitySchema abilitySchema)
     {
+        if (abilitySchema == null) return "Пропустить";
+
         switch (abilitySchema.name)
         {
             case ("melee"):

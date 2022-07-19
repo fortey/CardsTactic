@@ -33,6 +33,13 @@ public class CreaturePanel : MonoBehaviour
             }
         }
 
+        if (creature != null && !creature.IsEnemy)
+        {
+            var button = _actionButtons[creature.Abilities.Count];
+            button.Initialize(null);
+            button.gameObject.SetActive(true);
+        }
+
     }
     private void OnTurnChanged(bool isEnemyTurn)
     {

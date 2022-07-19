@@ -1,5 +1,5 @@
 import { Room, Client, Delayed } from "colyseus";
-import { GameRoomState } from "./schema/GameRoomState";
+import { CreatureSchema, GameRoomState } from "./schema/GameRoomState";
 import { Board } from "../game/board";
 import { abilities } from "../game/abilities/abilities";
 import { CreatureFactory } from "../game/creatureFactory";
@@ -16,6 +16,7 @@ export class gameRoom extends Room<GameRoomState> {
   bot = false;
   maxPass = 2;
   passes = new Map<string, number>();
+  started = false;
 
   onCreate(options: any) {
     this.setState(new GameRoomState());
@@ -72,6 +73,7 @@ export class gameRoom extends Room<GameRoomState> {
       this.state.board[19] = creature.id;
 
       this.broadcast("start");
+      this.started = true;
     }
     console.log(client.sessionId, "joined!");
   }
@@ -132,23 +134,28 @@ export class gameRoom extends Room<GameRoomState> {
 
   pass(client: Client) {
     if (this.state.currentTurn !== client.sessionId) return;
+    let selected: CreatureSchema = null;
+    this.state.creatures.forEach(creature => {
+      if (selected === null && creature.active && creature.owner === client.sessionId) {
+        selected = creature;
+      }
+    });
+    if (selected !== null) selected.active = false;
 
-    const playerIds = Array.from(this.state.players.keys());
-
-    if (this.passes.get(client.sessionId) == 0) {
-      this.EndTurn();
-      return;
-    }
-
-    this.passes.set(client.sessionId, this.passes.get(client.sessionId) - 1);
-    this.state.currentTurn = (client.sessionId === playerIds[0]) ? playerIds[1] : playerIds[0];
-
-    this.setAutoMoveTimeout();
+    this.TurnDone(client);
   }
 
   setAutoMoveTimeout() {
     if (this.randomMoveTimeout) {
       this.randomMoveTimeout.clear();
+    }
+
+    let hasActive = false;
+    this.state.creatures.forEach(creature => { if (creature.active && creature.owner === this.state.currentTurn) hasActive = true; });
+
+    if (!hasActive && this.started) {
+      this.TurnDone({ sessionId: this.state.currentTurn } as Client);
+      return;
     }
     const timeout = (this.state.currentTurn === "bot" ? 1 : TURN_TIMEOUT) * 1000;
     this.randomMoveTimeout = this.clock.setTimeout(() => this.pass({ sessionId: this.state.currentTurn } as Client), timeout);
@@ -246,6 +253,10 @@ export class gameRoom extends Room<GameRoomState> {
     const creatureID = this.state.board[data[0]];
     const creature = this.state.creatures.get(creatureID);
     if (creature != null && creature.active && creature.owner === client.sessionId) {
+      if (data[1] === "pass") {
+        creature.active = false;
+        this.TurnDone(client);
+      }
       if (abilities[data[1]] !== undefined) {
         abilities[data[1]].onClicked(data[0], creature, this.state, this.board, (targets: number[]) => client.send("available_targets", targets));
       }
@@ -263,21 +274,32 @@ export class gameRoom extends Room<GameRoomState> {
     const creature = this.state.creatures.get(creatureID);
 
     if (creature != null && creature.active && creature.owner === client.sessionId) {
+
       if (abilities[action].invoke(cellSource, creature, this.state, this.board, cellTarget)) {
         this.broadcast("action", [cellSource, cellTarget]);
         creature.active = false;
-        if (this.CheckEndTurn())
-          this.EndTurn();
-        else
-          this.pass(client);
+        this.TurnDone(client);
       }
     }
+  }
+
+  TurnDone(client: Client) {
+    if (this.CheckEndTurn())
+      this.EndTurn();
+
+    if (this.state.currentTurn !== client.sessionId) return;
+
+    const playerIds = Array.from(this.state.players.keys());
+
+    this.state.currentTurn = (client.sessionId === playerIds[0]) ? playerIds[1] : playerIds[0];
+
+    this.setAutoMoveTimeout();
   }
 
   CheckEndTurn(): boolean {
     let allInactive = true;
     this.state.creatures.forEach(creature => {
-      if (creature.active) allInactive = false;
+      if (creature.active && (!this.bot || creature.owner != "bot")) allInactive = false;
     });
     return allInactive;
   }
