@@ -17,6 +17,7 @@ export class gameRoom extends Room<GameRoomState> {
   maxPass = 2;
   passes = new Map<string, number>();
   started = false;
+  movedCell: number = null;
 
   onCreate(options: any) {
     this.setState(new GameRoomState());
@@ -28,6 +29,7 @@ export class gameRoom extends Room<GameRoomState> {
     this.onMessage("pass", (client, message) => this.pass(client));
 
     this.bot = options["bot"];
+    //this.roomName = options["name"];
   }
 
   onJoin(client: Client, options: any) {
@@ -135,11 +137,17 @@ export class gameRoom extends Room<GameRoomState> {
   pass(client: Client) {
     if (this.state.currentTurn !== client.sessionId) return;
     let selected: CreatureSchema = null;
-    this.state.creatures.forEach(creature => {
-      if (selected === null && creature.active && creature.owner === client.sessionId) {
-        selected = creature;
-      }
-    });
+
+    if (this.movedCell != null) {
+      selected = this.state.creatures.get(this.state.board[this.movedCell]);
+    }
+
+    if (selected !== null)
+      this.state.creatures.forEach(creature => {
+        if (selected === null && creature.active && creature.owner === client.sessionId && creature.health > 0) {
+          selected = creature;
+        }
+      });
     if (selected !== null) selected.active = false;
 
     this.TurnDone(client);
@@ -230,7 +238,7 @@ export class gameRoom extends Room<GameRoomState> {
 
     const creatureID = this.state.board[cell];
     const creature = this.state.creatures.get(creatureID);
-    if (creature != null && creature.owner === client.sessionId && creature.active && creature.steps > 0) {
+    if (creature != null && creature.owner === client.sessionId && creature.active && creature.steps > 0 && (this.movedCell == null || this.movedCell == cell)) {
       client.send("available_cells", this.board.availableCellsForMove(this.state.board, cell));
     }
   }
@@ -239,12 +247,14 @@ export class gameRoom extends Room<GameRoomState> {
 
     const creatureID = this.state.board[data[0]];
     const creature = this.state.creatures.get(creatureID);
-    if (creature != null && creature.owner === client.sessionId && creature.active && creature.steps > 0) {
+    if (creature != null && creature.owner === client.sessionId && creature.active && creature.steps > 0 && (this.movedCell == null || this.movedCell == data[0])) {
       const available_cells = this.board.availableCellsForMove(this.state.board, data[0]);
       if (available_cells.find(i => i == data[1]) !== undefined) {
         this.state.board[data[0]] = "";
         this.state.board[data[1]] = creatureID;
         creature.steps--;
+
+        this.movedCell = data[1];
       }
     }
   }
@@ -252,7 +262,7 @@ export class gameRoom extends Room<GameRoomState> {
   onAbilityClicked(client: Client, data: any[]) {
     const creatureID = this.state.board[data[0]];
     const creature = this.state.creatures.get(creatureID);
-    if (creature != null && creature.active && creature.owner === client.sessionId) {
+    if (creature != null && creature.active && creature.owner === client.sessionId && (this.movedCell == null || this.movedCell == data[0])) {
       if (data[1] === "pass") {
         creature.active = false;
         this.TurnDone(client);
@@ -273,7 +283,7 @@ export class gameRoom extends Room<GameRoomState> {
     const creatureID = this.state.board[cellSource];
     const creature = this.state.creatures.get(creatureID);
 
-    if (creature != null && creature.active && creature.owner === client.sessionId) {
+    if (creature != null && creature.active && creature.owner === client.sessionId && (this.movedCell == null || this.movedCell == data[0])) {
 
       if (abilities[action].invoke(cellSource, creature, this.state, this.board, cellTarget)) {
         this.broadcast("action", [cellSource, cellTarget]);
@@ -289,6 +299,8 @@ export class gameRoom extends Room<GameRoomState> {
 
     if (this.state.currentTurn !== client.sessionId) return;
 
+    this.movedCell = null;
+
     const playerIds = Array.from(this.state.players.keys());
 
     this.state.currentTurn = (client.sessionId === playerIds[0]) ? playerIds[1] : playerIds[0];
@@ -299,7 +311,7 @@ export class gameRoom extends Room<GameRoomState> {
   CheckEndTurn(): boolean {
     let allInactive = true;
     this.state.creatures.forEach(creature => {
-      if (creature.active && (!this.bot || creature.owner != "bot")) allInactive = false;
+      if (creature.active && creature.health > 0 && (!this.bot || creature.owner != "bot")) allInactive = false;
     });
     return allInactive;
   }
@@ -309,6 +321,7 @@ export class gameRoom extends Room<GameRoomState> {
 
     this.state.creatures.forEach(creature => {
       if (!creature.active) creature.active = true;
+      creature.steps = creature.maxSteps;
     });
   }
 }

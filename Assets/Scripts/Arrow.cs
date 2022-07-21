@@ -1,10 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Arrow : MonoBehaviour
 {
     [SerializeField] private RectTransform _transform;
+    [SerializeField] private float _startWidth;
 
     public void Show(Vector2 start, Vector2 end)
     {
@@ -16,9 +16,25 @@ public class Arrow : MonoBehaviour
         if (n < 0) n += 360;
 
         _transform.eulerAngles = new Vector3(0, 0, n);
-        _transform.sizeDelta = new Vector2(distance, _transform.sizeDelta.y);
+
+        StartCoroutine(Moving(distance));
 
         Invoke(nameof(ReturnToPool), 0.5f);
+    }
+
+    private IEnumerator Moving(float width)
+    {
+        var size = _transform.sizeDelta;
+        var time = 0.3f;
+        var timer = 0f;
+
+        while (timer < time)
+        {
+            yield return null;
+            timer += Time.deltaTime;
+            size.x = Mathf.Lerp(_startWidth, width, timer / time);
+            _transform.sizeDelta = size;
+        }
     }
 
     private void ReturnToPool()

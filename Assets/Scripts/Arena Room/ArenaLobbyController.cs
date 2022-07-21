@@ -77,7 +77,7 @@ public class ArenaLobbyController : MonoBehaviour
     {
         Dictionary<string, object> roomOptions = new Dictionary<string, object>
         {
-            ["logic"] = "shootingGallery", //The name of our custom logic file
+            ["name"] = "Вася", //The name of our custom logic file
             ["minReqPlayers"] = 2,
             ["bot"] = Bot
         };
@@ -119,7 +119,7 @@ public class ArenaLobbyController : MonoBehaviour
         foreach (var room in _allRooms)
         {
             var roomItem = _roomItemsPool.Get().GetComponent<RoomListItem>();
-            roomItem.Setup(roomItem.name, () =>
+            roomItem.Setup(room.name, () =>
             {
                 JoinRoom(room.roomId);
                 _roomItemsPool.gameObject.SetActive(false);

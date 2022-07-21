@@ -769,7 +769,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: iconsDefault_31
+      name: shield
       rect:
         serializedVersion: 2
         x: 581
@@ -7440,6 +7440,7 @@ TextureImporter:
       iconsDefault_83: 705792107
       iconsDefault_151: 1565215124
       iconsDefault_209: 234500910
+      shield: -1531010740
       iconsDefault_339: -1259905277
       iconsDefault_307: 1280501575
       iconsDefault_277: 485143224
@@ -7507,16 +7508,15 @@ TextureImporter:
       iconsDefault_230: -330311734
       iconsDefault_246: 1423693775
       iconsDefault_258: -791939722
-      iconsDefault_31: -1531010740
+      iconsDefault_101: -139002992
       iconsDefault_95: 1230642222
       iconsDefault_150: -1335909071
-      iconsDefault_101: -139002992
+      iconsDefault_161: -1656152210
       iconsDefault_37: -530933738
       iconsDefault_26: -259559111
       iconsDefault_138: -30171641
       iconsDefault_197: -1127270535
       iconsDefault_191: 1817118415
-      iconsDefault_161: -1656152210
       iconsDefault_180: 1446102256
       iconsDefault_331: 874917311
       iconsDefault_323: -144791060
