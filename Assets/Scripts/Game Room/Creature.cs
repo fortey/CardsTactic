@@ -15,6 +15,8 @@ public class Creature : MonoBehaviour
 
     [Header("Attributes")]
     [SerializeField] private GameObject _shotProtection;
+    [SerializeField] private GameObject _regeneration;
+    [SerializeField] private GameObject _poisoning;
 
     private CreatureSchema _schema;
     public string ID { get; private set; }
@@ -55,6 +57,19 @@ public class Creature : MonoBehaviour
             {
                 case ("shot_protection"):
                     _shotProtection.SetActive(true);
+                    break;
+            }
+        }
+
+        for (int i = 0; i < schema.passiveAbilities.Count; i++)
+        {
+            switch (schema.passiveAbilities[i].name)
+            {
+                case ("regeneration"):
+                    _regeneration.SetActive(true);
+                    break;
+                case ("poisoning"):
+                    _poisoning.SetActive(true);
                     break;
             }
         }
@@ -121,7 +136,8 @@ public class Creature : MonoBehaviour
     private void ShowPopupText(Color color, float value)
     {
         var popup = Global.Instance.PopupTextPool.Get();
-        popup.GetComponent<PopupText>().Play(transform.position, color, value.ToString());
+        var text = value < 0 ? value.ToString() : $"+{value}";
+        popup.GetComponent<PopupText>().Play(transform.position, color, text);
     }
 
     private void ShowClock(bool show)

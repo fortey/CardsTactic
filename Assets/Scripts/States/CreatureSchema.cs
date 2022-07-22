@@ -37,5 +37,8 @@ public partial class CreatureSchema : Schema {
 
 	[Type(9, "array", typeof(ArraySchema<AbilitySchema>))]
 	public ArraySchema<AbilitySchema> abilities = new ArraySchema<AbilitySchema>();
+
+	[Type(10, "array", typeof(ArraySchema<AbilitySchema>))]
+	public ArraySchema<AbilitySchema> passiveAbilities = new ArraySchema<AbilitySchema>();
 }
 

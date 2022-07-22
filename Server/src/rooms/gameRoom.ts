@@ -4,6 +4,7 @@ import { Board } from "../game/board";
 import { abilities } from "../game/abilities/abilities";
 import { CreatureFactory } from "../game/creatureFactory";
 import { NetworkedUser } from "./schema/NetworkedUser";
+import { GameEvents } from "../game/gameEvents";
 
 const TURN_TIMEOUT = 10
 const BOARD_WIDTH = 5;
@@ -294,8 +295,8 @@ export class gameRoom extends Room<GameRoomState> {
   }
 
   TurnDone(client: Client) {
-    if (this.CheckEndTurn())
-      this.EndTurn();
+    if (this.CheckEndRound())
+      this.EndRound();
 
     if (this.state.currentTurn !== client.sessionId) return;
 
@@ -308,7 +309,7 @@ export class gameRoom extends Room<GameRoomState> {
     this.setAutoMoveTimeout();
   }
 
-  CheckEndTurn(): boolean {
+  CheckEndRound(): boolean {
     let allInactive = true;
     this.state.creatures.forEach(creature => {
       if (creature.active && creature.health > 0 && (!this.bot || creature.owner != "bot")) allInactive = false;
@@ -316,12 +317,14 @@ export class gameRoom extends Room<GameRoomState> {
     return allInactive;
   }
 
-  EndTurn() {
-    this.passes.forEach((value, key) => this.passes.set(key, this.maxPass));
+  EndRound() {
+    //this.passes.forEach((value, key) => this.passes.set(key, this.maxPass));
 
     this.state.creatures.forEach(creature => {
       if (!creature.active) creature.active = true;
       creature.steps = creature.maxSteps;
     });
+
+    GameEvents.onStartRound(this);
   }
 }

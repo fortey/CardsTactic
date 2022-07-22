@@ -3,6 +3,8 @@ import { Board } from "../board";
 import { Ability } from "./ability";
 
 export const melee = new Ability();
+melee.name = "melee";
+
 melee.onClicked = function (cell: number, source: CreatureSchema, state: GameRoomState, board: Board, sendTargets: any) {
     const targets = board.neighboringTargets(state.board, cell);
     sendTargets(targets);
@@ -11,7 +13,7 @@ melee.invoke = function (cellSource: number, source: CreatureSchema, state: Game
     const targetID = state.board[cellTarget];
     const target = state.creatures.get(targetID);
     if (target == undefined) return false;
-    const ability = source.abilities.find(ability => ability.name == "melee");
+    const ability = source.abilities.find(ability => ability.name == this.name);
     if (ability == undefined) return false;
 
     //target.health -= ability.values[0];

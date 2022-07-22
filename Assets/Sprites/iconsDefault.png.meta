@@ -748,7 +748,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: iconsDefault_30
+      name: scull
       rect:
         serializedVersion: 2
         x: 517
@@ -5641,13 +5641,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: iconsDefault_263
+      name: regen
       rect:
         serializedVersion: 2
         x: 714
-        y: 202
-        width: 44
-        height: 48
+        y: 196
+        width: 52
+        height: 54
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -5993,27 +5993,6 @@ TextureImporter:
       bones: []
       spriteID: bd09f83f71e1d7742b6a456792080a8c
       internalID: 2072671419
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: iconsDefault_280
-      rect:
-        serializedVersion: 2
-        x: 739
-        y: 197
-        width: 26
-        height: 27
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: fe64f6575e755de4e9650c97e61e67b4
-      internalID: 737559742
       vertices: []
       indices: 
       edges: []
@@ -7334,7 +7313,6 @@ TextureImporter:
       iconsDefault_271: 205069470
       iconsDefault_183: 1882334158
       iconsDefault_219: 663793983
-      iconsDefault_30: 1477072772
       iconsDefault_235: 493775081
       iconsDefault_25: 1703533481
       iconsDefault_20: -615482025
@@ -7434,6 +7412,7 @@ TextureImporter:
       iconsDefault_165: 990715168
       iconsDefault_210: -881918138
       iconsDefault_221: -120901699
+      regen: 441298229
       iconsDefault_310: -347141447
       iconsDefault_108: 506019075
       iconsDefault_312: -1363220638
@@ -7466,6 +7445,7 @@ TextureImporter:
       iconsDefault_176: -2115473143
       iconsDefault_286: 647679935
       iconsDefault_272: 1369953570
+      scull: 1477072772
       iconsDefault_42: -752136450
       iconsDefault_60: -421348424
       iconsDefault_327: -953765502
@@ -7583,7 +7563,7 @@ TextureImporter:
       iconsDefault_123: -242909066
       iconsDefault_19: -1063622783
       iconsDefault_216: 1305738131
-      iconsDefault_263: 441298229
+      iconsDefault_337: -1323862473
       iconsDefault_187: -850914419
       iconsDefault_267: 1080632208
       iconsDefault_283: 977739710
@@ -7591,7 +7571,6 @@ TextureImporter:
       iconsDefault_14: 2117537869
       iconsDefault_294: 892829149
       iconsDefault_76: 1551169651
-      iconsDefault_337: -1323862473
       iconsDefault_146: -1003192742
       iconsDefault_23: 802509290
       iconsDefault_282: -1530670723

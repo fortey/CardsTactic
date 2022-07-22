@@ -4,6 +4,7 @@ import { Ability } from "./ability";
 
 export const shot = new Ability();
 shot.name = "shot";
+
 shot.onClicked = function (cell: number, source: CreatureSchema, state: GameRoomState, board: Board, sendTargets: any) {
     const ability = source.abilities.find(ability => ability.name == this.name);
     if (ability == undefined) return;

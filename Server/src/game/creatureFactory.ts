@@ -27,6 +27,11 @@ export const CreatureFactory = {
         ability.values.push(3);
         creature.abilities.push(ability);
 
+        ability = new AbilitySchema();
+        ability.name = "poisoning";
+        ability.values.push(1);
+        creature.passiveAbilities.push(ability);
+
         return creature;
     },
 
@@ -49,6 +54,11 @@ export const CreatureFactory = {
         ability.values.push(2);
         ability.values.push(3);
         creature.abilities.push(ability);
+
+        ability = new AbilitySchema();
+        ability.name = "regeneration";
+        ability.values.push(1);
+        creature.passiveAbilities.push(ability);
 
         return creature;
     }
