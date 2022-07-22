@@ -1,4 +1,4 @@
-import { CreatureSchema, GameRoomState } from "../../rooms/schema/GameRoomState";
+import { AbilitySchema, CreatureSchema, GameRoomState } from "../../rooms/schema/GameRoomState";
 import { Board } from "../board";
 import { Ability } from "./ability";
 
@@ -7,7 +7,8 @@ shot.name = "shot";
 shot.onClicked = function (cell: number, source: CreatureSchema, state: GameRoomState, board: Board, sendTargets: any) {
     const ability = source.abilities.find(ability => ability.name == this.name);
     if (ability == undefined) return;
-    const targets = board.targetsInRange(state.board, cell, ability.values[0], ability.values[1]);
+    const targets = this.targets(cell, state, board, ability);//board.targetsInRange(state.board, cell, ability.values[0], ability.values[1]);
+
     sendTargets(targets);
 };
 shot.invoke = function (cellSource: number, source: CreatureSchema, state: GameRoomState, board: Board, cellTarget: number) {
@@ -17,10 +18,19 @@ shot.invoke = function (cellSource: number, source: CreatureSchema, state: GameR
     const ability = source.abilities.find(ability => ability.name == this.name);
     if (ability == undefined) return false;
 
-    const targets = board.targetsInRange(state.board, cellSource, ability.values[0], ability.values[1]);
+    const targets = this.targets(cellSource, state, board, ability);
     if (targets.indexOf(cellTarget) == -1) return false;
 
     //target.health -= ability.values[2];
     this.damage(cellTarget, target, state, ability.values[2]);
     return true;
 };
+
+shot.targets = function (cell: number, state: GameRoomState, board: Board, ability: AbilitySchema): number[] {
+    const targets = board.targetsInRange(state.board, cell, ability.values[0], ability.values[1]);
+
+    return targets.filter(targetCell => {
+        const targetCreature = state.creatures.get(state.board[targetCell]);
+        return targetCreature !== null && targetCreature.attributes.indexOf("shot_protection") == -1;
+    });
+}

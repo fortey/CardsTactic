@@ -41,6 +41,8 @@ export const CreatureFactory = {
         creature.maxSteps = 2;
         creature.steps = creature.maxSteps;
 
+        creature.attributes.push("shot_protection");
+
         let ability = new AbilitySchema();
         ability.name = "melee";
         ability.values.push(1);

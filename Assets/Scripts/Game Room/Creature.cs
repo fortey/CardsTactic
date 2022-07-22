@@ -13,6 +13,9 @@ public class Creature : MonoBehaviour
     [SerializeField] private Image _targetImage;
     [SerializeField] private GameObject _clock;
 
+    [Header("Attributes")]
+    [SerializeField] private GameObject _shotProtection;
+
     private CreatureSchema _schema;
     public string ID { get; private set; }
     public string Owner { get; private set; }
@@ -45,6 +48,17 @@ public class Creature : MonoBehaviour
 
         if (isEnemy) _image.material = Global.Instance.EnemyCardMaterial;
         else _image.material = Global.Instance.AllyCardMaterial;
+
+        for (int i = 0; i < schema.attributes.Count; i++)
+        {
+            switch (schema.attributes[i])
+            {
+                case ("shot_protection"):
+                    _shotProtection.SetActive(true);
+                    break;
+            }
+        }
+
         UpdateStats(schema);
     }
 

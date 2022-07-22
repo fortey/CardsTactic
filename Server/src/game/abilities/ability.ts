@@ -1,4 +1,4 @@
-import { CreatureSchema, GameRoomState } from "../../rooms/schema/GameRoomState";
+import { AbilitySchema, CreatureSchema, GameRoomState } from "../../rooms/schema/GameRoomState";
 import { Board } from "../board";
 
 export class Ability {
@@ -14,4 +14,6 @@ export class Ability {
             state.graveyard.push(creature.id);
         }
     }
+
+    targets(cell: number, state: GameRoomState, board: Board, ability: AbilitySchema): number[] { return null; }
 }
