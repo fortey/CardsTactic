@@ -32,13 +32,16 @@ public partial class CreatureSchema : Schema {
 	[Type(7, "number")]
 	public float maxSteps = default(float);
 
-	[Type(8, "array", typeof(ArraySchema<string>), "string")]
+	[Type(8, "boolean")]
+	public bool defense = default(bool);
+
+	[Type(9, "array", typeof(ArraySchema<string>), "string")]
 	public ArraySchema<string> attributes = new ArraySchema<string>();
 
-	[Type(9, "array", typeof(ArraySchema<AbilitySchema>))]
+	[Type(10, "array", typeof(ArraySchema<AbilitySchema>))]
 	public ArraySchema<AbilitySchema> abilities = new ArraySchema<AbilitySchema>();
 
-	[Type(10, "array", typeof(ArraySchema<AbilitySchema>))]
+	[Type(11, "array", typeof(ArraySchema<AbilitySchema>))]
 	public ArraySchema<AbilitySchema> passiveAbilities = new ArraySchema<AbilitySchema>();
 }
 

@@ -12,6 +12,7 @@ public class Creature : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _stepsLabel;
     [SerializeField] private Image _targetImage;
     [SerializeField] private GameObject _clock;
+    [SerializeField] private GameObject _defense;
 
     [Header("Attributes")]
     [SerializeField] private GameObject _shotProtection;
@@ -124,6 +125,9 @@ public class Creature : MonoBehaviour
                 case ("active"):
                     Active = (bool)changed.Value;
                     ShowClock(!Active);
+                    break;
+                case ("defense"):print(changed.Value);
+                    _defense.SetActive((bool)changed.Value);
                     break;
                 default:
                     print(changed.Field);

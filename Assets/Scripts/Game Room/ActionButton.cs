@@ -15,13 +15,22 @@ public class ActionButton : MonoBehaviour
 
         _button.onClick.RemoveAllListeners();
 
-        var abilityName = abilitySchema != null ? abilitySchema.name : "pass";
-        _button.onClick.AddListener(() => onClick?.Invoke(abilityName));
+        //var abilityName = abilitySchema != null ? abilitySchema.name : "pass";
+        _button.onClick.AddListener(() => onClick?.Invoke(abilitySchema.name));
+    }
+
+    public void Initialize(string name, string text)
+    {
+        _text.text = text;
+
+        _button.onClick.RemoveAllListeners();
+
+        _button.onClick.AddListener(() => onClick?.Invoke(name));
     }
 
     private string GetText(AbilitySchema abilitySchema)
     {
-        if (abilitySchema == null) return "Пропустить";
+        //if (abilitySchema == null) return "Пропустить";
 
         switch (abilitySchema.name)
         {

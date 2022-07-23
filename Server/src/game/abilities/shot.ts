@@ -8,7 +8,7 @@ shot.name = "shot";
 shot.onClicked = function (cell: number, source: CreatureSchema, state: GameRoomState, board: Board, sendTargets: any) {
     const ability = source.abilities.find(ability => ability.name == this.name);
     if (ability == undefined) return;
-    const targets = this.targets(cell, state, board, ability);//board.targetsInRange(state.board, cell, ability.values[0], ability.values[1]);
+    const targets = this.targets(cell, source, state, board, ability);//board.targetsInRange(state.board, cell, ability.values[0], ability.values[1]);
 
     sendTargets(targets);
 };
@@ -19,7 +19,7 @@ shot.invoke = function (cellSource: number, source: CreatureSchema, state: GameR
     const ability = source.abilities.find(ability => ability.name == this.name);
     if (ability == undefined) return false;
 
-    const targets = this.targets(cellSource, state, board, ability);
+    const targets = this.targets(cellSource,source, state, board, ability);
     if (targets.indexOf(cellTarget) == -1) return false;
 
     //target.health -= ability.values[2];
@@ -27,7 +27,7 @@ shot.invoke = function (cellSource: number, source: CreatureSchema, state: GameR
     return true;
 };
 
-shot.targets = function (cell: number, state: GameRoomState, board: Board, ability: AbilitySchema): number[] {
+shot.targets = function (cell: number, source: CreatureSchema,state: GameRoomState, board: Board, ability: AbilitySchema): number[] {
     const targets = board.targetsInRange(state.board, cell, ability.values[0], ability.values[1]);
 
     return targets.filter(targetCell => {

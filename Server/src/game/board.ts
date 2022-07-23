@@ -78,6 +78,13 @@ export class Board {
 
         return cells;
     }
+
+    isNeighbor(a: number, b: number): boolean {
+        const A = this.i_to_xy(a);
+        const B = this.i_to_xy(b);
+
+        return Math.abs(A.x - B.x) < 2 && Math.abs(A.y - B.y) < 2;
+    }
 }
 
 class Cell {

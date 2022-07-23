@@ -36,7 +36,11 @@ public class CreaturePanel : MonoBehaviour
         if (creature != null && !creature.IsEnemy)
         {
             var button = _actionButtons[creature.Abilities.Count];
-            button.Initialize(null);
+            button.Initialize("defense", "Защита");
+            button.gameObject.SetActive(true);
+
+            button = _actionButtons[creature.Abilities.Count+1];
+            button.Initialize("pass", "Пропустить");
             button.gameObject.SetActive(true);
         }
 
