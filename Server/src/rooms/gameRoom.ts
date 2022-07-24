@@ -162,7 +162,7 @@ export class gameRoom extends Room<GameRoomState> {
   }
 
   checkWin(x: number, y: number, move: string) {
-    
+
   }
 
   onSelectCell(client: Client, cell: number) {
@@ -199,9 +199,15 @@ export class gameRoom extends Room<GameRoomState> {
         this.TurnDone(client);
         return;
       }
-      if(data[1] === "defense") {
+      if (data[1] === "defense") {
         creature.defense = true;
         creature.active = false;
+        this.TurnDone(client);
+        return;
+      }
+      if (data[1] === "take_points") {
+        creature.active = false;
+        creature.points++;
         this.TurnDone(client);
         return;
       }

@@ -11,7 +11,7 @@ regeneration.invoke = function (cellSource: number, source: CreatureSchema, stat
     const ability = source.passiveAbilities.find(ability => ability.name == this.name);
     if (ability == undefined) return false;
 
-    source.health += ability.values[0];
+    source.health = Math.min(source.maxHealth, source.health + ability.values[0]);
 
     return true;
 };

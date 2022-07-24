@@ -19,6 +19,7 @@ public class CreaturePanel : MonoBehaviour
     }
     private void OnCreatureSelected(Creature creature)
     {
+        var needPoints = false;
         for (int i = 0; i < _actionButtons.Length; i++)
         {
             var button = _actionButtons[i];
@@ -26,6 +27,8 @@ public class CreaturePanel : MonoBehaviour
             {
                 button.Initialize(creature.Abilities[i]);
                 button.gameObject.SetActive(true);
+
+                if (creature.Abilities[i].needPoints) needPoints = true;
             }
             else
             {
@@ -35,11 +38,18 @@ public class CreaturePanel : MonoBehaviour
 
         if (creature != null && !creature.IsEnemy)
         {
-            var button = _actionButtons[creature.Abilities.Count];
+            if (needPoints)
+            {
+                var takePointsButton = _actionButtons[creature.Abilities.Count];
+                takePointsButton.Initialize("take_points", "Накопить очко действия");
+                takePointsButton.gameObject.SetActive(true);
+            }
+
+            var button = _actionButtons[creature.Abilities.Count + 1];
             button.Initialize("defense", "Защита");
             button.gameObject.SetActive(true);
 
-            button = _actionButtons[creature.Abilities.Count+1];
+            button = _actionButtons[creature.Abilities.Count + 2];
             button.Initialize("pass", "Пропустить");
             button.gameObject.SetActive(true);
         }

@@ -13,6 +13,8 @@ public class Creature : MonoBehaviour
     [SerializeField] private Image _targetImage;
     [SerializeField] private GameObject _clock;
     [SerializeField] private GameObject _defense;
+    [SerializeField] private GameObject _points;
+    [SerializeField] private TextMeshProUGUI _pointsCount;
 
     [Header("Attributes")]
     [SerializeField] private GameObject _shotProtection;
@@ -100,6 +102,12 @@ public class Creature : MonoBehaviour
     {
         _healthLabel.text = schema.health.ToString();
         _stepsLabel.text = $"{schema.steps}/{schema.maxSteps}";
+
+        _points.SetActive(schema.points > 0);
+        if (schema.points > 0)
+        {
+            _pointsCount.text = schema.points.ToString();
+        }
     }
 
     public void SetTarget(bool active)
@@ -126,8 +134,13 @@ public class Creature : MonoBehaviour
                     Active = (bool)changed.Value;
                     ShowClock(!Active);
                     break;
-                case ("defense"):print(changed.Value);
+                case ("defense"):
                     _defense.SetActive((bool)changed.Value);
+                    break;
+                case ("points"):
+                    var points = (float)changed.Value;
+                    _points.SetActive(points > 0);
+                    _pointsCount.text = points.ToString();
                     break;
                 default:
                     print(changed.Field);

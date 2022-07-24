@@ -18,5 +18,5 @@ export class Ability {
         }
     }
 
-    targets(cell: number, source: CreatureSchema,state: GameRoomState, board: Board, ability: AbilitySchema): number[] { return null; }
+    targets(cell: number, source: CreatureSchema, state: GameRoomState, board: Board, ability: AbilitySchema): number[] { return null; }
 }

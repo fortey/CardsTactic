@@ -8,9 +8,10 @@ export const CreatureFactory = {
         creature.owner = owner;
         creature.name = "Mousy";
         creature.active = true;
-        creature.maxHealth = 10;
-        creature.health = 10;
+        creature.maxHealth = 20;
+        creature.health = 20;
         creature.maxSteps = 1;
+        creature.points = 0;
         creature.steps = creature.maxSteps;
 
         let ability = new AbilitySchema();
@@ -20,17 +21,20 @@ export const CreatureFactory = {
         ability.values.push(3);
         creature.abilities.push(ability);
 
+        // ability = new AbilitySchema();
+        // ability.name = "shot";
+        // ability.values.push(2);
+        // ability.values.push(3);
+        // ability.values.push(3);
+        // creature.abilities.push(ability);
+
         ability = new AbilitySchema();
-        ability.name = "shot";
+        ability.name = "poison_shot";
+        ability.needPoints = true;
         ability.values.push(2);
         ability.values.push(3);
         ability.values.push(3);
         creature.abilities.push(ability);
-
-        ability = new AbilitySchema();
-        ability.name = "poisoning";
-        ability.values.push(1);
-        creature.passiveAbilities.push(ability);
 
         return creature;
     },
@@ -41,8 +45,8 @@ export const CreatureFactory = {
         creature.owner = owner;
         creature.name = "Hell Mousy";
         creature.active = true;
-        creature.maxHealth = 10;
-        creature.health = 10;
+        creature.maxHealth = 20;
+        creature.health = 20;
         creature.maxSteps = 2;
         creature.steps = creature.maxSteps;
 

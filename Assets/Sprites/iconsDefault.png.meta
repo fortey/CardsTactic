@@ -6124,7 +6124,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: iconsDefault_287
+      name: point
       rect:
         serializedVersion: 2
         x: 199
@@ -7380,7 +7380,7 @@ TextureImporter:
       iconsDefault_120: 194970660
       iconsDefault_257: -2005698188
       iconsDefault_264: 41898398
-      iconsDefault_287: -734531526
+      point: -734531526
       iconsDefault_223: 416990721
       iconsDefault_324: -1723063969
       iconsDefault_181: 1899862936

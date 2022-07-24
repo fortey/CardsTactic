@@ -3,6 +3,7 @@ import { NetworkedUser } from "./NetworkedUser";
 
 export class AbilitySchema extends Schema {
   @type("string") name: string;
+  @type("boolean") needPoints: boolean;
   @type(["number"]) values: number[] = new ArraySchema<number>();
 }
 
@@ -16,6 +17,7 @@ export class CreatureSchema extends Schema {
   @type("number") steps: number;
   @type("number") maxSteps: number;
   @type("boolean") defense: boolean;
+  @type("number") points: number;
   @type(["string"]) attributes = new ArraySchema<string>();
   @type([AbilitySchema]) abilities = new ArraySchema<AbilitySchema>();
   @type([AbilitySchema]) passiveAbilities = new ArraySchema<AbilitySchema>();

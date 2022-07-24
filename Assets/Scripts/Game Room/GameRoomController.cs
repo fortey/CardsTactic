@@ -315,7 +315,7 @@ public class GameRoomController : MonoBehaviour
 
     public void OnAbilityClick(string abilityName)
     {
-        if (abilityName != "pass" && abilityName != "defense")
+        if (abilityName != "pass" && abilityName != "defense" && abilityName != "take_points")
             _selectedAction = abilityName;
         _room.Send("ability_clicked", new object[] { GetCellIndex(_selectedCreature.ID), abilityName });
     }

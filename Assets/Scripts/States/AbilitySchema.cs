@@ -11,7 +11,10 @@ public partial class AbilitySchema : Schema {
 	[Type(0, "string")]
 	public string name = default(string);
 
-	[Type(1, "array", typeof(ArraySchema<float>), "number")]
+	[Type(1, "boolean")]
+	public bool needPoints = default(bool);
+
+	[Type(2, "array", typeof(ArraySchema<float>), "number")]
 	public ArraySchema<float> values = new ArraySchema<float>();
 }
 
