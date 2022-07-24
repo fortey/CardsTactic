@@ -164,7 +164,7 @@ public class GameRoomController : MonoBehaviour
 
         _creatures[id] = creature;
 
-        schema.OnChange += creature.OnStateChanged;
+        //schema.OnChange += creature.OnStateChanged;
     }
 
     private void OnGraveyardAdd(int index, string value)

@@ -78,6 +78,9 @@ public class Creature : MonoBehaviour
         }
 
         UpdateStats(schema);
+
+        schema.OnChange += OnStateChanged;
+        schema.passiveAbilities.OnAdd += OnAbilityAdd;
     }
 
     public void Move(Vector3 position)
@@ -160,5 +163,10 @@ public class Creature : MonoBehaviour
     private void ShowClock(bool show)
     {
         _clock.SetActive(show);
+    }
+
+    private void OnAbilityAdd(int index, AbilitySchema ability)
+    {
+        if (ability.name == "poisoning") _poisoning.SetActive(true);
     }
 }
