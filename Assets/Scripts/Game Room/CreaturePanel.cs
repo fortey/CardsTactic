@@ -2,11 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class CreaturePanel : MonoBehaviour
 {
     [SerializeField] private GameRoomController _gameRoomController;
     [SerializeField] private ActionButton[] _actionButtons;
+    [SerializeField] private TextMeshProUGUI _name;
+    [SerializeField] private TextMeshProUGUI _description;
     private void Start()
     {
         foreach (var button in _actionButtons)
@@ -19,6 +22,8 @@ public class CreaturePanel : MonoBehaviour
     }
     private void OnCreatureSelected(Creature creature)
     {
+        UpdateInfo(creature);
+
         var needPoints = false;
         for (int i = 0; i < _actionButtons.Length; i++)
         {
@@ -63,5 +68,11 @@ public class CreaturePanel : MonoBehaviour
         }
     }
 
+    private void UpdateInfo(Creature creature)
+    {
+        _name.text = creature.name;
 
+        //var builder = new StringBuilder();
+
+    }
 }

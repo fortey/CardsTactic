@@ -16,8 +16,32 @@ melee.invoke = function (cellSource: number, source: CreatureSchema, state: Game
     const ability = source.abilities.find(ability => ability.name == this.name);
     if (ability == undefined) return false;
 
-    //target.health -= ability.values[0];
-    this.damage(cellTarget, target, state, ability.values[0]);
+    const random = Math.random();
+
+    if (target.defense && target.owner != source.owner) {
+        if (random < 0.45)
+            this.damage(cellTarget, target, state, ability.values[0]);
+        else if (random < 0.55)
+            this.damage(cellTarget, target, state, ability.values[1]);
+        else if (random < 0.60)
+            this.damage(cellTarget, target, state, ability.values[2]);
+        else if (random < 0.90) { }
+        // miss
+        else {
+            const targetAbility = target.abilities.find(ability => ability.name == this.name);
+            if (targetAbility !== undefined)
+                this.damage(cellSource, source, state, targetAbility.values[0]);
+        }
+    }
+    else {
+        if (random < 0.6)
+            this.damage(cellTarget, target, state, ability.values[0]);
+        else if (random < 0.9)
+            this.damage(cellTarget, target, state, ability.values[1]);
+        else
+            this.damage(cellTarget, target, state, ability.values[2]);
+    }
+
     return true;
 };
 
@@ -43,3 +67,4 @@ melee.targets = function (cell: number, source: CreatureSchema, state: GameRoomS
         return unavailable.indexOf(targetCell) == -1;
     });
 };
+

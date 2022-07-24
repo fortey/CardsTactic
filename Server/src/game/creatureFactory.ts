@@ -33,6 +33,8 @@ export const CreatureFactory = {
         ability.needPoints = true;
         ability.values.push(2);
         ability.values.push(3);
+        ability.values.push(2);
+        ability.values.push(3);
         ability.values.push(3);
         creature.abilities.push(ability);
 

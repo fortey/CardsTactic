@@ -21,11 +21,12 @@ public class Creature : MonoBehaviour
     [SerializeField] private GameObject _regeneration;
     [SerializeField] private GameObject _poisoning;
 
-    private CreatureSchema _schema;
+    public CreatureSchema Schema;
     public string ID { get; private set; }
     public string Owner { get; private set; }
 
     public List<AbilitySchema> Abilities { get; private set; } = new List<AbilitySchema>();
+    public List<AbilitySchema> PassiveAbilities { get; private set; } = new List<AbilitySchema>();
     public bool IsEnemy { get; private set; }
     private IEnumerator _waitForUpdate;
 
@@ -37,7 +38,7 @@ public class Creature : MonoBehaviour
 
     public void Initialize(CreatureSchema schema, bool isEnemy)
     {
-        _schema = schema;
+        Schema = schema;
         _nameLabel.text = schema.name;
         _image.sprite = Global.Instance.CardSprites[schema.name];
 
@@ -49,6 +50,11 @@ public class Creature : MonoBehaviour
         for (int i = 0; i < schema.abilities.Count; i++)
         {
             Abilities.Add(schema.abilities[i]);
+        }
+
+        for (int i = 0; i < schema.passiveAbilities.Count; i++)
+        {
+            PassiveAbilities.Add(schema.passiveAbilities[i]);
         }
 
         if (isEnemy) _image.material = Global.Instance.EnemyCardMaterial;
@@ -131,7 +137,7 @@ public class Creature : MonoBehaviour
                     ShowPopupText(color, difference);
                     break;
                 case ("steps"):
-                    _stepsLabel.text = $"{changed.Value}/{_schema.maxSteps}";
+                    _stepsLabel.text = $"{changed.Value}/{Schema.maxSteps}";
                     break;
                 case ("active"):
                     Active = (bool)changed.Value;

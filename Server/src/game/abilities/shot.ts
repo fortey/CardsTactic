@@ -19,15 +19,22 @@ shot.invoke = function (cellSource: number, source: CreatureSchema, state: GameR
     const ability = source.abilities.find(ability => ability.name == this.name);
     if (ability == undefined) return false;
 
-    const targets = this.targets(cellSource,source, state, board, ability);
+    const targets = this.targets(cellSource, source, state, board, ability);
     if (targets.indexOf(cellTarget) == -1) return false;
 
-    //target.health -= ability.values[2];
-    this.damage(cellTarget, target, state, ability.values[2]);
+    const random = Math.random();
+
+    if (random < 0.6)
+        this.damage(cellTarget, target, state, ability.values[2]);
+    else if (random < 0.9)
+        this.damage(cellTarget, target, state, ability.values[3]);
+    else
+        this.damage(cellTarget, target, state, ability.values[4]);
+
     return true;
 };
 
-shot.targets = function (cell: number, source: CreatureSchema,state: GameRoomState, board: Board, ability: AbilitySchema): number[] {
+shot.targets = function (cell: number, source: CreatureSchema, state: GameRoomState, board: Board, ability: AbilitySchema): number[] {
     const targets = board.targetsInRange(state.board, cell, ability.values[0], ability.values[1]);
 
     return targets.filter(targetCell => {

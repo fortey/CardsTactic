@@ -34,7 +34,14 @@ poison_shot.invoke = function (cellSource: number, source: CreatureSchema, state
         target.passiveAbilities.push(poisoningAbility);
     }
 
-    this.damage(cellTarget, target, state, ability.values[2]);
+    const random = Math.random();
+    if (random < 0.6)
+        this.damage(cellTarget, target, state, ability.values[2]);
+    else if (random < 0.9)
+        this.damage(cellTarget, target, state, ability.values[3]);
+    else
+        this.damage(cellTarget, target, state, ability.values[4]);
+
     return true;
 };
 
