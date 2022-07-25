@@ -25,11 +25,11 @@ shot.invoke = function (cellSource: number, source: CreatureSchema, state: GameR
     const random = Math.random();
 
     if (random < 0.6)
-        this.damage(cellTarget, target, state, ability.values[2]);
+        this.damage(cellTarget, target, state, ability.values[0]);
     else if (random < 0.9)
-        this.damage(cellTarget, target, state, ability.values[3]);
+        this.damage(cellTarget, target, state, ability.values[1]);
     else
-        this.damage(cellTarget, target, state, ability.values[4]);
+        this.damage(cellTarget, target, state, ability.values[2]);
 
     return true;
 };
