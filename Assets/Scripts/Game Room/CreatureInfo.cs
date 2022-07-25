@@ -17,6 +17,12 @@ public class CreatureInfo : MonoBehaviour
         builder.Append($"{Language.Instance["steps"]}: {creature.Schema.steps}/{creature.Schema.maxSteps}");
         builder.AppendLine();
 
+        if (creature.Schema.points > 0)
+        {
+            builder.Append($"{Language.Instance["points"]}: {creature.Schema.points}");
+            builder.AppendLine();
+        }
+
         for (int i = 0; i < creature.Schema.attributes.Count; i++)
         {
             builder.Append(Language.Instance[creature.Schema.attributes[i]]);

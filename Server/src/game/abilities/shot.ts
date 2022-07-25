@@ -35,7 +35,7 @@ shot.invoke = function (cellSource: number, source: CreatureSchema, state: GameR
 };
 
 shot.targets = function (cell: number, source: CreatureSchema, state: GameRoomState, board: Board, ability: AbilitySchema): number[] {
-    const targets = board.targetsInRange(state.board, cell, ability.values[0], ability.values[1]);
+    const targets = board.targetsInRange(state.board, cell, ability.minRange, ability.maxRange);
 
     return targets.filter(targetCell => {
         const targetCreature = state.creatures.get(state.board[targetCell]);

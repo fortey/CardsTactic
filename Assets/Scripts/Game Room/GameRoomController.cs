@@ -311,7 +311,10 @@ public class GameRoomController : MonoBehaviour
         _creatures[creatureID] = creature;
 
         creatureSchema.OnChange += creature.OnStateChanged;
-        creature.OnChange += (creature) => OnSelectedCreatureChanged(creature);
+        creature.OnChange += (creature) =>
+        {
+            if (_selectedCreature == creature) OnSelectedCreatureChanged?.Invoke(creature);
+        };
     }
 
     public void OnAbilityClick(string abilityName)
@@ -361,7 +364,8 @@ public class GameRoomController : MonoBehaviour
     {
         _myTurn = _room.State.currentTurn == _currentNetworkedUser.sessionId;
         OnTurnChanged?.Invoke(!_myTurn);
-        _passButton.interactable = _myTurn;
+        //_passButton.interactable = _myTurn;
+        _selectedAction = "";
 
         ClearTargetCreatures();
         _board.ClearCells();

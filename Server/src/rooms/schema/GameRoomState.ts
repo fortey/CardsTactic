@@ -3,8 +3,10 @@ import { NetworkedUser } from "./NetworkedUser";
 
 export class AbilitySchema extends Schema {
   @type("string") name: string;
-  @type("boolean") needPoints: boolean;
+  @type("number") needPoints: number;
   @type(["number"]) values: number[] = new ArraySchema<number>();
+  @type("number") minRange: number;
+  @type("number") maxRange: number;
 }
 
 export class CreatureSchema extends Schema {

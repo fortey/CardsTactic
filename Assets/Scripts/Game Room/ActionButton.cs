@@ -7,6 +7,8 @@ public class ActionButton : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _text;
     [SerializeField] private Button _button;
+    [SerializeField] private Image _image;
+    [SerializeField] private Color _notActiveColor;
     public event Action<string> onClick;
 
     public void Initialize(AbilitySchema abilitySchema)
@@ -19,9 +21,9 @@ public class ActionButton : MonoBehaviour
         _button.onClick.AddListener(() => onClick?.Invoke(abilitySchema.name));
     }
 
-    public void Initialize(string name, string text)
+    public void Initialize(string name)
     {
-        _text.text = text;
+        _text.text = Language.Instance[name];
 
         _button.onClick.RemoveAllListeners();
 
@@ -30,23 +32,22 @@ public class ActionButton : MonoBehaviour
 
     private string GetText(AbilitySchema abilitySchema)
     {
-        //if (abilitySchema == null) return "Пропустить";
+        if (abilitySchema == null) return string.Empty;
 
-        switch (abilitySchema.name)
+        if (abilitySchema.maxRange > 0)
         {
-            case ("melee"):
-                return $"Атака {abilitySchema.values[0]}-{abilitySchema.values[1]}-{abilitySchema.values[2]}";
-            case ("shot"):
-                return $"Выстрел {abilitySchema.values[2]}. Дальность {abilitySchema.values[1]}";
-            case ("poison_shot"):
-                return $"Отравляющий выстрел {abilitySchema.values[2]}. Дальность {abilitySchema.values[1]}";
-            default:
-                return string.Empty;
+            return $"{Language.Instance[abilitySchema.name]} {abilitySchema.values[0]}-{abilitySchema.values[1]}-{abilitySchema.values[2]}. {Language.Instance["range"]} {abilitySchema.maxRange}";
+        }
+        else
+        {
+            return $"{Language.Instance[abilitySchema.name]} {abilitySchema.values[0]}-{abilitySchema.values[1]}-{abilitySchema.values[2]}";
         }
     }
 
     public void SetInteractable(bool interactable)
     {
         _button.interactable = interactable;
+
+        _image.color = interactable ? Color.white : _notActiveColor;
     }
 }

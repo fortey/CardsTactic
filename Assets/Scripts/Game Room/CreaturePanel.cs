@@ -10,6 +10,10 @@ public class CreaturePanel : MonoBehaviour
     [SerializeField] private GameRoomController _gameRoomController;
     [SerializeField] private ActionButton[] _actionButtons;
     [SerializeField] private CreatureInfo _creatureInfo;
+
+    private Creature _creature;
+    private bool _isEnemyTurn;
+
     private void Start()
     {
         foreach (var button in _actionButtons)
@@ -23,10 +27,10 @@ public class CreaturePanel : MonoBehaviour
     }
     private void OnCreatureSelected(Creature creature)
     {
+        _creature = creature;
         if (creature == null)
         {
             _creatureInfo.gameObject.SetActive(false);
-            //return;
         }
         else
         {
@@ -34,16 +38,28 @@ public class CreaturePanel : MonoBehaviour
             _creatureInfo.UpdateInfo(creature);
         }
 
+        UpdateActions();
+    }
+
+    private void UpdateActions()
+    {
+        if (_creature)
+            SetInteractableAllButtons(_creature.Schema.active);
+
         var needPoints = false;
         for (int i = 0; i < _actionButtons.Length; i++)
         {
             var button = _actionButtons[i];
-            if (creature != null && !creature.IsEnemy && i < creature.Abilities.Count)
+            if (_creature != null && !_creature.IsEnemy && i < _creature.Abilities.Count)
             {
-                button.Initialize(creature.Abilities[i]);
+                button.Initialize(_creature.Abilities[i]);
                 button.gameObject.SetActive(true);
 
-                if (creature.Abilities[i].needPoints) needPoints = true;
+                if (_creature.Abilities[i].needPoints > 0)
+                {
+                    needPoints = true;
+                    if (_creature.Schema.points < _creature.Abilities[i].needPoints) button.SetInteractable(false);
+                }
             }
             else
             {
@@ -51,30 +67,39 @@ public class CreaturePanel : MonoBehaviour
             }
         }
 
-        if (creature != null && !creature.IsEnemy)
+        if (_creature != null && !_creature.IsEnemy)
         {
             if (needPoints)
             {
-                var takePointsButton = _actionButtons[creature.Abilities.Count];
-                takePointsButton.Initialize("take_points", "Накопить очко действия");
+                var takePointsButton = _actionButtons[_creature.Abilities.Count];
+                takePointsButton.Initialize("take_points");
                 takePointsButton.gameObject.SetActive(true);
             }
 
-            var button = _actionButtons[creature.Abilities.Count + 1];
-            button.Initialize("defense", "Защита");
+            var button = _actionButtons[_creature.Abilities.Count + 1];
+            button.Initialize("defense");
             button.gameObject.SetActive(true);
 
-            button = _actionButtons[creature.Abilities.Count + 2];
-            button.Initialize("pass", "Пропустить");
+            button = _actionButtons[_creature.Abilities.Count + 2];
+            button.Initialize("pass");
             button.gameObject.SetActive(true);
+
+            if (_isEnemyTurn)
+                SetInteractableAllButtons(false);
         }
-
     }
+
     private void OnTurnChanged(bool isEnemyTurn)
+    {
+        _isEnemyTurn = isEnemyTurn;
+        UpdateActions();
+    }
+
+    private void SetInteractableAllButtons(bool interactable)
     {
         foreach (var button in _actionButtons)
         {
-            button.SetInteractable(!isEnemyTurn);
+            button.SetInteractable(interactable);
         }
     }
 

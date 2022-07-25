@@ -115,7 +115,7 @@ export class gameRoom extends Room<GameRoomState> {
       selected = this.state.creatures.get(this.state.board[this.movedCell]);
     }
 
-    if (selected !== null)
+    if (selected === null)
       this.state.creatures.forEach(creature => {
         if (selected === null && creature.active && creature.owner === client.sessionId && creature.health > 0) {
           selected = creature;

@@ -30,9 +30,9 @@ export const CreatureFactory = {
 
         ability = new AbilitySchema();
         ability.name = "poison_shot";
-        ability.needPoints = true;
-        ability.values.push(2);
-        ability.values.push(3);
+        ability.needPoints = 1;
+        ability.minRange = 2;
+        ability.maxRange = 3;
         ability.values.push(2);
         ability.values.push(3);
         ability.values.push(3);

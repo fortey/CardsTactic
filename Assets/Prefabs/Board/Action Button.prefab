@@ -272,3 +272,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _text: {fileID: 2405820618974370703}
   _button: {fileID: 8812991613316800636}
+  _image: {fileID: 5554157105687159851}
+  _notActiveColor: {r: 0.7075472, g: 0.7075472, b: 0.7075472, a: 1}
