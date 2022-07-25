@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class Creature : MonoBehaviour
 {
+    public event System.Action<Creature> OnChange;
     [SerializeField] private Image _image;
     [SerializeField] private TextMeshProUGUI _nameLabel;
     [SerializeField] private TextMeshProUGUI _healthLabel;
@@ -26,7 +27,6 @@ public class Creature : MonoBehaviour
     public string Owner { get; private set; }
 
     public List<AbilitySchema> Abilities { get; private set; } = new List<AbilitySchema>();
-    public List<AbilitySchema> PassiveAbilities { get; private set; } = new List<AbilitySchema>();
     public bool IsEnemy { get; private set; }
     private IEnumerator _waitForUpdate;
 
@@ -50,11 +50,6 @@ public class Creature : MonoBehaviour
         for (int i = 0; i < schema.abilities.Count; i++)
         {
             Abilities.Add(schema.abilities[i]);
-        }
-
-        for (int i = 0; i < schema.passiveAbilities.Count; i++)
-        {
-            PassiveAbilities.Add(schema.passiveAbilities[i]);
         }
 
         if (isEnemy) _image.material = Global.Instance.EnemyCardMaterial;
@@ -156,7 +151,7 @@ public class Creature : MonoBehaviour
                     break;
             }
         }
-
+        OnChange?.Invoke(this);
     }
 
     private void ShowPopupText(Color color, float value)

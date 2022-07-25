@@ -10,6 +10,7 @@ using UnityEngine.UI;
 public class GameRoomController : MonoBehaviour
 {
     public event Action<Creature> OnCreatureSelected;
+    public event Action<Creature> OnSelectedCreatureChanged;
     public event Action<bool> OnTurnChanged;
     private ColyseusRoom<GameRoomState> _room;
     private string _lastRoomId;
@@ -194,7 +195,6 @@ public class GameRoomController : MonoBehaviour
     #region Server messages
     private void StartGame(object message)
     {
-        print("start");
         _isStarted = true;
         for (int i = 0; i < _room.State.board.Count; i++)
         {
@@ -311,6 +311,7 @@ public class GameRoomController : MonoBehaviour
         _creatures[creatureID] = creature;
 
         creatureSchema.OnChange += creature.OnStateChanged;
+        creature.OnChange += (creature) => OnSelectedCreatureChanged(creature);
     }
 
     public void OnAbilityClick(string abilityName)
@@ -381,4 +382,12 @@ public class GameRoomController : MonoBehaviour
         if (_room != null) _room.Leave();
         ClearRoomHandlers();
     }
+
+    // private void OnCreatureChangedHandler(Creature creature)
+    // {
+    //     if (_selectedCreature == creature)
+    //     {
+    //         OnSelectedCreatureChanged?.Invoke(creature);
+    //     }
+    // }
 }

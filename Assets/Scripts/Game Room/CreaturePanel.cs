@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Text;
 
 public class CreaturePanel : MonoBehaviour
 {
     [SerializeField] private GameRoomController _gameRoomController;
     [SerializeField] private ActionButton[] _actionButtons;
-    [SerializeField] private TextMeshProUGUI _name;
-    [SerializeField] private TextMeshProUGUI _description;
+    [SerializeField] private CreatureInfo _creatureInfo;
     private void Start()
     {
         foreach (var button in _actionButtons)
@@ -18,11 +18,21 @@ public class CreaturePanel : MonoBehaviour
         }
 
         _gameRoomController.OnCreatureSelected += OnCreatureSelected;
+        _gameRoomController.OnSelectedCreatureChanged += OnCreatureSelected;
         _gameRoomController.OnTurnChanged += OnTurnChanged;
     }
     private void OnCreatureSelected(Creature creature)
     {
-        UpdateInfo(creature);
+        if (creature == null)
+        {
+            _creatureInfo.gameObject.SetActive(false);
+            //return;
+        }
+        else
+        {
+            _creatureInfo.gameObject.SetActive(true);
+            _creatureInfo.UpdateInfo(creature);
+        }
 
         var needPoints = false;
         for (int i = 0; i < _actionButtons.Length; i++)
@@ -68,11 +78,10 @@ public class CreaturePanel : MonoBehaviour
         }
     }
 
-    private void UpdateInfo(Creature creature)
+    private void OnDestroy()
     {
-        _name.text = creature.name;
-
-        //var builder = new StringBuilder();
-
+        _gameRoomController.OnCreatureSelected -= OnCreatureSelected;
+        _gameRoomController.OnSelectedCreatureChanged -= OnCreatureSelected;
+        _gameRoomController.OnTurnChanged -= OnTurnChanged;
     }
 }
