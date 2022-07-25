@@ -129,6 +129,11 @@ public class ArenaLobbyController : MonoBehaviour
 
     private void OnDisable()
     {
-        //if (_lobby != null) _lobby.Leave();
+        if (_lobby != null) _lobby.Leave();
+    }
+
+    private void OnDestroy()
+    {
+        if (_lobby != null) _lobby.Leave();
     }
 }

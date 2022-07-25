@@ -23,4 +23,19 @@ public class Language : Singleton<Language>
                 return key;
         }
     }
+
+    public string GetAbilityText(AbilitySchema ability)
+    {
+        if (ability == null) return string.Empty;
+
+        var needPoints = ability.needPoints > 0 ? "○: " : "";
+        if (ability.maxRange > 0)
+        {
+            return $"{needPoints}{this[ability.name]} {ability.values[0]}-{ability.values[1]}-{ability.values[2]}. {this["range"]} {ability.maxRange}";
+        }
+        else
+        {
+            return $"{needPoints}{this[ability.name]} {ability.values[0]}-{ability.values[1]}-{ability.values[2]}";
+        }
+    }
 }

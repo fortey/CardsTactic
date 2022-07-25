@@ -17,5 +17,9 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: 5807a71842036ba4da53774b5ba8d46b, type: 3}
   - name: Hell Mousy
     sprite: {fileID: 21300000, guid: 98160dcd588835a408e6d7201ae4b798, type: 3}
+  - name: Swamp Mousy
+    sprite: {fileID: 21300000, guid: 1df3339a69df0964d8cdad5bd3c88d45, type: 3}
+  - name: Strong Mouse
+    sprite: {fileID: 21300000, guid: ff693f1ef22e0c34f99df4ba2f3aa8f2, type: 3}
   allyCardMaterial: {fileID: 2100000, guid: 40e622f0ad15d12408cbf9521a3bac60, type: 2}
   enemyCardMaterial: {fileID: 2100000, guid: 4a4d36c795c590a4a8d095149823ebe2, type: 2}

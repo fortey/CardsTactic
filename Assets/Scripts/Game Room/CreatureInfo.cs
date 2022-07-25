@@ -35,6 +35,13 @@ public class CreatureInfo : MonoBehaviour
             builder.AppendLine();
         }
 
+        for (int i = 0; i < creature.Schema.abilities.Count; i++)
+        {
+            builder.AppendLine();
+            builder.Append(Language.Instance.GetAbilityText(creature.Schema.abilities[i]));
+            builder.AppendLine();
+        }
+
         _description.text = builder.ToString();
     }
 }

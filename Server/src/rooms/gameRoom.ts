@@ -67,6 +67,14 @@ export class gameRoom extends Room<GameRoomState> {
       this.state.creatures.set(creature.id, creature);
       this.state.board[1] = creature.id;
 
+      creature = CreatureFactory["Strong Mouse"]("5", playerIds[0]);
+      this.state.creatures.set(creature.id, creature);
+      this.state.board[6] = creature.id;
+
+      creature = CreatureFactory["Swamp Mousy"]("6", playerIds[0]);
+      this.state.creatures.set(creature.id, creature);
+      this.state.board[5] = creature.id;
+
       creature = CreatureFactory["Mousy"]("1", playerIds[1]);
       this.state.creatures.set(creature.id, creature);
       this.state.board[18] = creature.id;
@@ -74,6 +82,10 @@ export class gameRoom extends Room<GameRoomState> {
       creature = CreatureFactory["Hell Mousy"]("2", playerIds[1]);
       this.state.creatures.set(creature.id, creature);
       this.state.board[19] = creature.id;
+
+      creature = CreatureFactory["Hell Mousy"]("10", playerIds[1]);
+      this.state.creatures.set(creature.id, creature);
+      this.state.board[13] = creature.id;
 
       this.broadcast("start");
       this.started = true;

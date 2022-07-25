@@ -10,11 +10,13 @@ export class Ability {
     invoke(cellSource: number, source: CreatureSchema, state: GameRoomState, board: Board, cellTarget: number): boolean { return true; }
 
     damage(cell: number, creature: CreatureSchema, state: GameRoomState, damage: number) {
-        creature.health -= damage;
-        if (creature.health <= 0) {
-            creature.health = 0;
-            state.board[cell] = "";
-            state.graveyard.push(creature.id);
+        if (damage > 0) {
+            creature.health -= damage;
+            if (creature.health <= 0) {
+                creature.health = 0;
+                state.board[cell] = "";
+                state.graveyard.push(creature.id);
+            }
         }
     }
 

@@ -19,7 +19,7 @@ public class GameRoomController : MonoBehaviour
     [SerializeField] private Board _board;
     [SerializeField] private Creature _creaturePrefab;
     [SerializeField] private Transform _creaturesParent;
-    [SerializeField] private Button _passButton;
+    [SerializeField] private GameObject _WaitingOpponent;
 
     [SerializeField] private static NetworkedUser _currentNetworkedUser;
 
@@ -46,6 +46,8 @@ public class GameRoomController : MonoBehaviour
 
             _lastRoomId = _room.Id;
             RegisterRoomHandlers();
+
+            _WaitingOpponent.SetActive(true);
         }
         catch (Exception e)
         {
@@ -203,6 +205,8 @@ public class GameRoomController : MonoBehaviour
                 CreateCreature(i);
             }
         }
+
+        _WaitingOpponent.SetActive(false);
     }
 
     private void onAvailableCells(int[] cells)
