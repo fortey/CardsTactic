@@ -127,13 +127,22 @@ public class ArenaLobbyController : MonoBehaviour
         }
     }
 
+    private void LeaveRoom()
+    {
+        if (_lobby == null) return;
+
+        _lobby.colyseusConnection.OnError -= Room_OnError;
+        _lobby.colyseusConnection.OnClose -= Room_OnClose;
+        _lobby.Leave();
+
+    }
     private void OnDisable()
     {
-        if (_lobby != null) _lobby.Leave();
+        LeaveRoom();
     }
 
     private void OnDestroy()
     {
-        if (_lobby != null) _lobby.Leave();
+        LeaveRoom();
     }
 }

@@ -167,6 +167,11 @@ public class GameRoomController : MonoBehaviour
 
         _creatures[id] = creature;
 
+        creature.OnChange += (creature) =>
+        {
+            if (_selectedCreature == creature) OnSelectedCreatureChanged?.Invoke(creature);
+        };
+
         //schema.OnChange += creature.OnStateChanged;
     }
 
@@ -200,6 +205,7 @@ public class GameRoomController : MonoBehaviour
         _isStarted = true;
         for (int i = 0; i < _room.State.board.Count; i++)
         {
+            print(_room.State.board[i]);
             if (_room.State.board[i] != "")
             {
                 CreateCreature(i);
@@ -314,7 +320,7 @@ public class GameRoomController : MonoBehaviour
 
         _creatures[creatureID] = creature;
 
-        creatureSchema.OnChange += creature.OnStateChanged;
+        //creatureSchema.OnChange += creature.OnStateChanged;
         creature.OnChange += (creature) =>
         {
             if (_selectedCreature == creature) OnSelectedCreatureChanged?.Invoke(creature);
