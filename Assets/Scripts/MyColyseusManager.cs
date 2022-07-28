@@ -12,13 +12,9 @@ public class MyColyseusManager : ColyseusManager<MyColyseusManager>
     {
         Dictionary<string, object> roomOptions = new Dictionary<string, object>
         {
-            ["logic"] = "shootingGallery", //The name of our custom logic file
+            ["logic"] = "",
             ["minReqPlayers"] = 1
         };
-
-        //_roomController = new GameRoomController();
-        //_roomController.SetRoomOptions(roomOptions);
-        //_roomController.SetDependencies(_colyseusSettings);
 
         InitializeClient();
 
@@ -27,21 +23,6 @@ public class MyColyseusManager : ColyseusManager<MyColyseusManager>
     public override void InitializeClient()
     {
         base.InitializeClient();
-
-        //_roomController.JoinOrCreateRoom(client, roomOptions);
-        //EnterRoom();
-    }
-
-    private async void EnterRoom()
-    {
-        Dictionary<string, object> roomOptions = new Dictionary<string, object>
-        {
-            ["logic"] = "shootingGallery", //The name of our custom logic file
-            ["minReqPlayers"] = 1
-        };
-        _room = await client.JoinOrCreate<GameRoomState>("game_room", roomOptions);
-
-        _room.State.creatures.OnAdd += (id, creature) => print(creature);
     }
 
 }

@@ -12,7 +12,7 @@
     "test": "mocha --require ts-node/register test/**_test.ts --exit --timeout 15000",
     "schema-codegen": "schema-codegen src/rooms/schema/GameRoomState.ts --csharp --output ../Assets/Scripts/States/",
     "schema-codegen2": "schema-codegen src/rooms/schema/ArenaRoomState.ts --csharp --output ../Assets/Scripts/States/",
-    "schema-codegen3": "schema-codegen src/rooms/schema/GameRoomState.ts --csharp --output ../Assets/Scripts/States/"
+    "schema-codegen3": "schema-codegen src/rooms/schema/MainRoomState.ts --csharp --output ../Assets/Scripts/States/"
   },
   "author": "",
   "license": "UNLICENSED",
