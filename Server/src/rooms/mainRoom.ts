@@ -4,6 +4,11 @@ import { NetworkedUser } from "./schema/NetworkedUser";
 
 export class MainRoom extends Room<MainRoomState>{
 
+    async onAuth(client: any, options: any) {
+
+        console.log(options);
+    }
+
     onCreate(options: any) {
         this.setState(new MainRoomState());
     }
