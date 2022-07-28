@@ -35,6 +35,7 @@ export default Arena({
         app.use("/colyseus", monitor());
 
         Data.initialize();
+        Data.CreateUser("tt");
     },
 
 
