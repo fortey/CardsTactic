@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -9,6 +7,9 @@ public class Auth : MonoBehaviour
 
     public void Login()
     {
-        print(_nameInput.text);
+        if (_nameInput.text == string.Empty) return;
+        MyColyseusManager.Instance.ConnectToMain(_nameInput.text);
+
+        gameObject.SetActive(false);
     }
 }
