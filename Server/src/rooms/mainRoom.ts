@@ -19,17 +19,25 @@ export class MainRoom extends Room<MainRoomState>{
 
     onJoin(client: Client, options: any) {
 
-        let newNetworkedUser = new NetworkedUser().assign({
-            id: client.id,
-            sessionId: client.sessionId,
-        });
+        Data.FindOrCreateUser(options.name).then(id => this.JoinClient(client, options, id));
 
-        this.state.networkedUsers.set(client.sessionId, newNetworkedUser);
 
-        Data.CreateUser(options.name);
     }
 
     onLeave(client: Client, consented?: boolean): void | Promise<any> {
         this.state.networkedUsers.delete(client.sessionId);
+    }
+
+    JoinClient(client: Client, options: any, mongoId: string) {
+        let newNetworkedUser = new NetworkedUser().assign({
+            id: client.id,
+            sessionId: client.sessionId,
+            mongoId: mongoId.toString(),
+        });
+
+        this.state.networkedUsers.set(client.sessionId, newNetworkedUser);
+
+        console.log('---');
+        console.log(newNetworkedUser.mongoId);
     }
 }

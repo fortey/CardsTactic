@@ -3,9 +3,6 @@ import { monitor } from "@colyseus/monitor";
 import { LobbyRoom } from "colyseus";
 import { Data } from "./data";
 
-/**
- * Import your Room files
- */
 import { gameRoom } from "./rooms/gameRoom";
 import { MainRoom } from "./rooms/mainRoom";
 
@@ -35,7 +32,6 @@ export default Arena({
         app.use("/colyseus", monitor());
 
         Data.initialize();
-        Data.CreateUser("tt");
     },
 
 

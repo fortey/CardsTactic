@@ -2,6 +2,7 @@
 class MongoData {
     mongoClient: any;
     url: string;
+    db: any;
 
     public initialize() {
         const MongoClient = require('mongodb').MongoClient;
@@ -12,42 +13,42 @@ class MongoData {
         else this.url = process.env.MONGODB_URI;
 
         this.mongoClient = new MongoClient(this.url, { useUnifiedTopology: true });
+
+        //this.connect();
     }
 
     public connect() {
-        this.mongoClient.connect(function (err: any, client: {
+        this.mongoClient.connect((err: any, client: {
             db(arg0: string): any; close: () => void;
-        }) {
+        }) => {
             if (err) throw err;
-            var dbo = client.db("mydb");
-            dbo.createCollection("users", function (err: any, res: any) {
-                if (err) throw err;
-                console.log("Collection created!");
-                client.close();
-            });
-            //db.close();
+            this.db = client.db("mydb");
         });
     }
 
-    public CreateUser(name: string) {
-        this.mongoClient.connect(function (err: any, db: {
-            db(arg0: string): any; users: any; close: () => void;
-        }) {
-            if (err) throw err;
-            var dbo = db.db("userdb");
-            // dbo.createCollection("users", function (err: any, res: any) {
-            //     if (err) throw err;
-            //     console.log("Collection created!");
-            //     db.close();
-            // });
-            //db.close();
+    public async FindOrCreateUser(name: string): Promise<any> {
+        let id = null;
+        try {
+            await this.mongoClient.connect();
+            const users = this.mongoClient.db("userdb").collection("users");
+            const user = await this.findUser(users, name);
 
-            const users = dbo.collection("users");
+            if (user == null) {
+                const result = await users.insertOne({ name: name });
+                id = result.insertedId;
+            }
+            else
+                id = user._id;
+        }
+        finally {
+            this.mongoClient.close();
+        }
 
-            const user = users.find();
-            console.log(user.length);
-            db.close();
-        });
+        return id;
+    }
+
+    public async findUser(collection: any, name: string) {
+        return await collection.findOne({ name: name });
     }
 }
 

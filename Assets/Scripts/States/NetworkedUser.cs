@@ -14,10 +14,13 @@ public partial class NetworkedUser : Schema {
 	[Type(1, "string")]
 	public string sessionId = default(string);
 
-	[Type(2, "boolean")]
+	[Type(2, "string")]
+	public string mongoId = default(string);
+
+	[Type(3, "boolean")]
 	public bool connected = default(bool);
 
-	[Type(3, "map", typeof(MapSchema<string>), "string")]
+	[Type(4, "map", typeof(MapSchema<string>), "string")]
 	public MapSchema<string> attributes = new MapSchema<string>();
 }
 
