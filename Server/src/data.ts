@@ -34,8 +34,11 @@ class MongoData {
             const user = await this.findUser(users, name);
 
             if (user == null) {
-                const result = await users.insertOne({ name: name });
-                id = result.insertedId;
+                // const result = await users.insertOne({ name: name });
+                // id = result.insertedId;
+
+                // await this.initialFillingUser(id);
+                id = await this.createUser(users, name);
             }
             else
                 id = user._id;
@@ -47,11 +50,27 @@ class MongoData {
         return id;
     }
 
-    public async findUser(collection: any, name: string) {
+    private async findUser(collection: any, name: string) {
         return await collection.findOne({ name: name });
     }
-}
 
+    private async createUser(users: any, name: string) {
+        const result = await users.insertOne({ name: name });
+
+        const userCreatures = this.mongoClient.db("userdb").collection("user_creatures");
+        console.log(result.insertedId);
+        const creatures = [
+            { userId: result.insertedId, name: 'Mousy', count: 2 },
+            { userId: result.insertedId, name: 'Hell Mousy', count: 2 },
+            { userId: result.insertedId, name: 'Swamp Mousy', count: 2 },
+            { userId: result.insertedId, name: 'Strong Mouse', count: 1 },
+        ];
+
+        await userCreatures.insertMany(creatures);
+        return result.insertedId;
+    }
+
+}
 
 export const Data = new MongoData();
 

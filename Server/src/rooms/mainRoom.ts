@@ -21,7 +21,6 @@ export class MainRoom extends Room<MainRoomState>{
 
         Data.FindOrCreateUser(options.name).then(id => this.JoinClient(client, options, id));
 
-
     }
 
     onLeave(client: Client, consented?: boolean): void | Promise<any> {
@@ -37,7 +36,8 @@ export class MainRoom extends Room<MainRoomState>{
 
         this.state.networkedUsers.set(client.sessionId, newNetworkedUser);
 
-        console.log('---');
         console.log(newNetworkedUser.mongoId);
+
+        client.send("onJoin", newNetworkedUser);
     }
 }

@@ -15,8 +15,8 @@ export class gameRoom extends Room<GameRoomState> {
   randomMoveTimeout: Delayed;
   board = new Board();
   bot = false;
-  maxPass = 2;
-  passes = new Map<string, number>();
+  //maxPass = 2;
+  //passes = new Map<string, number>();
   started = false;
   movedCell: number = null;
 
@@ -44,11 +44,11 @@ export class gameRoom extends Room<GameRoomState> {
     this.state.networkedUsers.set(client.sessionId, newNetworkedUser);
     client.send("onJoin", newNetworkedUser);
 
-    this.passes.set(client.sessionId, this.maxPass);
+    //this.passes.set(client.sessionId, this.maxPass);
 
     if (this.bot) {
       this.state.players.set("bot", true);
-      this.passes.set("bot", this.maxPass);
+      //this.passes.set("bot", this.maxPass);
     }
 
     if (this.state.players.size === 2) {
