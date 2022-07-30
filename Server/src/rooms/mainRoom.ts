@@ -15,11 +15,12 @@ export class MainRoom extends Room<MainRoomState>{
     onCreate(options: any) {
         this.setState(new MainRoomState());
         //Data.connect();
+        this.onMessage("getSquads", (client, message) => this.onGetSquads(client));
     }
 
     onJoin(client: Client, options: any) {
 
-        Data.FindOrCreateUser(options.name).then(id => this.JoinClient(client, options, id));
+        Data.FindOrCreateUser(options.name).then(id => this.joinClient(client, options, id));
 
     }
 
@@ -27,7 +28,7 @@ export class MainRoom extends Room<MainRoomState>{
         this.state.networkedUsers.delete(client.sessionId);
     }
 
-    JoinClient(client: Client, options: any, mongoId: string) {
+    joinClient(client: Client, options: any, mongoId: string) {
         let newNetworkedUser = new NetworkedUser().assign({
             id: client.id,
             sessionId: client.sessionId,
@@ -39,5 +40,12 @@ export class MainRoom extends Room<MainRoomState>{
         console.log(newNetworkedUser.mongoId);
 
         client.send("onJoin", newNetworkedUser);
+    }
+
+    onGetSquads(client: Client) {
+
+        const mongoId = this.state.networkedUsers.get(client.sessionId).mongoId;
+
+        Data.getSquads(mongoId).then(squads => { client.send('squads', squads); console.log(squads); });
     }
 }

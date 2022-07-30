@@ -11,6 +11,8 @@ public class MyColyseusManager : ColyseusManager<MyColyseusManager>
     private ColyseusRoom<GameRoomState> _room;
     private ColyseusRoom<MainRoomState> _mainRoom;
     [SerializeField] private static NetworkedUser _currentNetworkedUser;
+
+    [SerializeField] private Auth _auth;
     protected override void Start()
     {
         // Dictionary<string, object> roomOptions = new Dictionary<string, object>
@@ -20,6 +22,8 @@ public class MyColyseusManager : ColyseusManager<MyColyseusManager>
         // };
 
         InitializeClient();
+
+        _auth.gameObject.SetActive(true);
 
         //_arenaController.JoinOrCreateRoom(client, roomOptions);
     }
@@ -52,6 +56,8 @@ public class MyColyseusManager : ColyseusManager<MyColyseusManager>
 
            _arenaController.JoinOrCreateRoom(client, null);
        });
+
+        _mainRoom.OnMessage<object>("squads", squads => print(squads));
     }
     private void ClearRoomHandlers()
     {
@@ -62,6 +68,11 @@ public class MyColyseusManager : ColyseusManager<MyColyseusManager>
         }
 
 
+    }
+
+    public void GetSquads()
+    {
+        _mainRoom.Send("getSquads");
     }
 
 }
