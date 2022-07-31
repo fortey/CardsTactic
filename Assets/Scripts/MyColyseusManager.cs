@@ -57,7 +57,7 @@ public class MyColyseusManager : ColyseusManager<MyColyseusManager>
            _arenaController.JoinOrCreateRoom(client, null);
        });
 
-        _mainRoom.OnMessage<object>("squads", squads => print(squads));
+        _mainRoom.OnMessage<Squad[]>("squads", squads => print(squads[0]));
     }
     private void ClearRoomHandlers()
     {

@@ -13,8 +13,8 @@ class MongoData {
             this.url = "mongodb+srv://6thlop:blaBla!!@cluster0.scvjk.mongodb.net/?retryWrites=true&w=majority";
         else this.url = process.env.MONGODB_URI;
 
-        this.mongoClient = new MongoClient(this.url, { useUnifiedTopology: true });
-
+        this.mongoClient = new MongoClient(this.url, { useUnifiedTopology: true }, { connectTimeoutMS: 30000 }, { keepAlive: 1 });
+        this.mongoClient.connect();
         //this.connect();
     }
 
@@ -30,7 +30,7 @@ class MongoData {
     public async FindOrCreateUser(name: string): Promise<any> {
         let id = null;
         try {
-            await this.mongoClient.connect();
+            //await this.mongoClient.connect();
             const users = this.mongoClient.db("userdb").collection("users");
             const user = await this.findUser(users, name);
 
@@ -45,7 +45,7 @@ class MongoData {
                 id = user._id;
         }
         finally {
-            this.mongoClient.close();
+            //await this.mongoClient.close();
         }
 
         return id;
@@ -79,13 +79,14 @@ class MongoData {
     }
 
     public async getSquads(id: string): Promise<any> {
-        let squads: any = null;
+        let squads: any = null; //console.log(this.mongoClient);
         try {
-            await this.mongoClient.connect();
-            squads = await this.mongoClient.db("userdb").collection("squads").find({ userId: new ObjectId(id) }).toArray();
+            //await this.mongoClient.connect();
+            const cursor = await this.mongoClient.db("userdb").collection("squads").find({ userId: new ObjectId(id) });
+            squads = await cursor.toArray();
         }
         finally {
-            this.mongoClient.close();
+            //await this.mongoClient.close();
         }
         return squads;
     }
