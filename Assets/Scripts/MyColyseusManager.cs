@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Colyseus;
@@ -13,6 +14,9 @@ public class MyColyseusManager : ColyseusManager<MyColyseusManager>
     [SerializeField] private static NetworkedUser _currentNetworkedUser;
 
     [SerializeField] private Auth _auth;
+
+    private Action<Squad[]> _onSquads;
+    private Action<UserCreature[]> _onCreatures;
     protected override void Start()
     {
         // Dictionary<string, object> roomOptions = new Dictionary<string, object>
@@ -57,7 +61,8 @@ public class MyColyseusManager : ColyseusManager<MyColyseusManager>
            _arenaController.JoinOrCreateRoom(client, null);
        });
 
-        _mainRoom.OnMessage<Squad[]>("squads", squads => print(squads[0]));
+        _mainRoom.OnMessage<Squad[]>("squads", squads => _onSquads?.Invoke(squads));
+        _mainRoom.OnMessage<UserCreature[]>("creatures", creatures => _onCreatures?.Invoke(creatures));
     }
     private void ClearRoomHandlers()
     {
@@ -70,9 +75,20 @@ public class MyColyseusManager : ColyseusManager<MyColyseusManager>
 
     }
 
-    public void GetSquads()
+    public void GetSquads(Action<Squad[]> callback)
     {
+        _onSquads = callback;
         _mainRoom.Send("getSquads");
     }
 
+    // public void OnSquads(Squad[] squads)
+    // {
+    //     _onSquads?.Invoke(squads);
+    // }
+
+    public void GetCreatures(Action<UserCreature[]> callback)
+    {
+        _onCreatures = callback;
+        _mainRoom.Send("getCreatures");
+    }
 }

@@ -79,16 +79,29 @@ class MongoData {
     }
 
     public async getSquads(id: string): Promise<any> {
-        let squads: any = null; //console.log(this.mongoClient);
+        let squads: any = null;
         try {
-            //await this.mongoClient.connect();
+
             const cursor = await this.mongoClient.db("userdb").collection("squads").find({ userId: new ObjectId(id) });
             squads = await cursor.toArray();
         }
         finally {
-            //await this.mongoClient.close();
+
         }
         return squads;
+    }
+
+    public async getUserCreatures(id: string): Promise<any> {
+        let creatures: any = null;
+        try {
+
+            const cursor = await this.mongoClient.db("userdb").collection("user_creatures").find({ userId: new ObjectId(id) });
+            creatures = await cursor.toArray();
+        }
+        finally {
+
+        }
+        return creatures;
     }
 }
 

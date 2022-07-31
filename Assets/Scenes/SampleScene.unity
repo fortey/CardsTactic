@@ -3680,8 +3680,9 @@ GameObject:
   - component: {fileID: 937677658}
   - component: {fileID: 937677657}
   - component: {fileID: 937677656}
+  - component: {fileID: 937677659}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Squad Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3751,7 +3752,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 937677657}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1142515365}
+        m_TargetAssemblyTypeName: Squads, Assembly-CSharp
+        m_MethodName: OnSquadSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 937677659}
+          m_ObjectArgumentAssemblyTypeName: SquadItem, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &937677657
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3790,6 +3803,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 937677654}
   m_CullTransparentMesh: 1
+--- !u!114 &937677659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 937677654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 317947eb3c80f9b4582c6c5e476124aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _text: {fileID: 1403226538}
 --- !u!1 &981503282
 GameObject:
   m_ObjectHideFlags: 0
@@ -4493,7 +4519,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05e6d461ab14d424fbd192048aa963e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _squadItems: {fileID: 0}
+  _squadItemsPool: {fileID: 1086590934}
 --- !u!1 &1244161628
 GameObject:
   m_ObjectHideFlags: 0
