@@ -7,9 +7,12 @@ public class Squads : MonoBehaviour
     [SerializeField] private Pool _squadItemsPool;
     private List<SquadItem> _squadItems = new List<SquadItem>();
 
+    private UserCreature[] _creatures;
+
     private void OnEnable()
     {
         ClearItems();
+        MyColyseusManager.Instance.GetSquads(OnSquads);
         MyColyseusManager.Instance.GetSquads(OnSquads);
     }
 
@@ -35,5 +38,10 @@ public class Squads : MonoBehaviour
     public void OnSquadSelected(SquadItem item)
     {
 
+    }
+
+    private void OnCreatures(UserCreature[] creatures)
+    {
+        _creatures = creatures;
     }
 }
