@@ -7,11 +7,11 @@ public class SquadItem : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _text;
 
-    private Squad _squard;
+    public Squad Squard { get; private set; }
 
     public void Initialize(Squad squad)
     {
-        this._squard = squad;
+        this.Squard = squad;
         _text.text = squad.name;
     }
 }

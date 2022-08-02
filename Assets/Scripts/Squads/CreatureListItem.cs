@@ -13,18 +13,31 @@ public class CreatureListItem : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     [SerializeField] private Canvas _canvas;
     [SerializeField] private CanvasGroup _canvasGroup;
     [SerializeField] private RectTransform _transform;
-    private Transform _inventoryCell;
+    public Transform inventoryCell;
 
     private void Start()
     {
-        _inventoryCell = _transform.parent;
+        inventoryCell = _transform.parent;
     }
     private string _name;
-    //private int _count;
+    public string Name { get => _name; }
 
-    public void Initialize(UserCreature creature)
+    public void Initialize(UserCreature creature, Transform parent)
     {
         _name = creature.name;
+        //_count = creature.count;
+
+        _nameLabel.text = _name;
+        //_countLabel.text = _count.ToString();
+        _image.sprite = Global.Instance.CardSprites[_name];
+
+        transform.SetParent(parent);
+        inventoryCell = parent;
+    }
+
+    public void Initialize(string name)
+    {
+        _name = name;
         //_count = creature.count;
 
         _nameLabel.text = _name;
@@ -39,7 +52,7 @@ public class CreatureListItem : MonoBehaviour, IBeginDragHandler, IDragHandler, 
             invCell.Pop();
             _transform.SetAsLastSibling();
         }
-        _transform.SetParent(_inventoryCell);
+        _transform.SetParent(inventoryCell);
         _transform.parent.SetAsLastSibling();
         _canvasGroup.blocksRaycasts = false;
     }
@@ -58,10 +71,13 @@ public class CreatureListItem : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         {
             invCell.Push(this);
             if (previousCell && previousCell.TryGetComponent<SquadCell>(out SquadCell squadCell))
+            {
                 squadCell.Clear();
-        }
 
+            }
+        }
         previousCell = _transform.parent;
+
     }
 
     public void SetDisable()
@@ -70,8 +86,8 @@ public class CreatureListItem : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         _image.color = Color.gray;
     }
 
-    public void ReturnToInventory()
-    {
+    // public void ReturnToInventory()
+    // {
 
-    }
+    // }
 }

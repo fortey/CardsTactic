@@ -9,38 +9,42 @@ public class InventoryCell : MonoBehaviour
     private UserCreature _creature;
     private int _count;
     private CreatureListItem _lastListItem;
-    private int Count
+    public int Count
     {
         get => _count;
         set
         {
             _count = value;
             _countLabel.text = _count.ToString();
+            if (_count == 0)
+                _lastListItem.SetDisable();
         }
     }
 
 
     private void Start()
     {
-        _creature = new UserCreature { name = "Mousy", count = 2 };
-        Initialize(_creature);
+        //_creature = new UserCreature { name = "Mousy", count = 2 };
+        //Initialize(_creature);
     }
 
-    public void Initialize(UserCreature creature)
+    public void Initialize(UserCreature creature, Pool creatureItemPool)
     {
         _count = creature.count;
 
         _countLabel.text = _count.ToString();
 
-        _listItem.Initialize(creature);
+        _listItem = creatureItemPool.Get().GetComponent<CreatureListItem>();
+
+        _listItem.Initialize(creature, transform);
+        _lastListItem = _listItem;
     }
 
     public void Pop()
     {
-        Count--;
+
         _lastListItem = Instantiate(_listItem, transform.position, Quaternion.identity, transform);
-        if (_count == 0)
-            _lastListItem.SetDisable();
+        Count--;
     }
 
     public void Push(CreatureListItem item)

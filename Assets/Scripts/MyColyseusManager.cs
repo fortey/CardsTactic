@@ -15,6 +15,7 @@ public class MyColyseusManager : ColyseusManager<MyColyseusManager>
 
     [SerializeField] private Auth _auth;
 
+
     private Action<Squad[]> _onSquads;
     private Action<UserCreature[]> _onCreatures;
     protected override void Start()
