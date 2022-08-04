@@ -86,6 +86,11 @@ public class CreatureListItem : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         _image.color = Color.gray;
     }
 
+    public void SetBlockRaycasts(bool block)
+    {
+        _canvasGroup.blocksRaycasts = block;
+    }
+
     // public void ReturnToInventory()
     // {
 

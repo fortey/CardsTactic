@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +5,7 @@ public class SquadInventory : MonoBehaviour
 {
     [SerializeField] private Pool _cellPool;
     [SerializeField] private UnityEngine.UI.GridLayoutGroup _gridLayout;
+
 
     private Dictionary<string, InventoryCell> _cells = new Dictionary<string, InventoryCell>();
 
@@ -29,7 +29,7 @@ public class SquadInventory : MonoBehaviour
                 var inventoryCell = _cells[creatureItem.Name];
                 inventoryCell.Count--;
                 creatureItem.inventoryCell = inventoryCell.transform;
-                //block raycast
+                creatureItem.SetBlockRaycasts(true);
             }
         }
     }
@@ -38,4 +38,5 @@ public class SquadInventory : MonoBehaviour
     {
         _gridLayout.enabled = false;
     }
+
 }

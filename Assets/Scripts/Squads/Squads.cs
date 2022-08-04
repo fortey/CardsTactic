@@ -15,6 +15,7 @@ public class Squads : MonoBehaviour
     [SerializeField] private SquadInventory _creatureInventory;
     [SerializeField] private GameObject _editMode;
     [SerializeField] private GameObject _squadListMode;
+    [SerializeField] private TMPro.TMP_InputField _nameInput;
 
     private Squad _selectedSquad;
 
@@ -62,6 +63,7 @@ public class Squads : MonoBehaviour
                 creatureItem.gameObject.SetActive(true);////
                 creatureItem.Initialize(creatureName);
                 creatureItem.previousCell = cell.transform;
+                creatureItem.SetBlockRaycasts(false);
             }
 
         }
@@ -76,10 +78,34 @@ public class Squads : MonoBehaviour
     {
         if (_selectedSquad != null)
         {
-            _squadListMode.SetActive(false);
-            _editMode.SetActive(true);
-            _creatureInventory.gameObject.SetActive(true);
+            OpenCloseEditPanel(true);
+            _nameInput.text = _selectedSquad.name;
             _creatureInventory.Initialize(_squadBoard, _creatures, _creatureItemPool);
         }
+    }
+
+    public void SaveSquad()
+    {
+        if (_selectedSquad != null && _nameInput.text != string.Empty)
+        {
+            OpenCloseEditPanel(false);
+
+            _selectedSquad.name = _nameInput.text;
+
+            for (int i = 0; i < _squadBoard.Count; i++)
+            {
+                if (_squadBoard[i].listItem)
+                    _selectedSquad.board[i] = _squadBoard[i].listItem.Name;
+                else
+                    _selectedSquad.board[i] = "";
+            }
+        }
+    }
+
+    public void OpenCloseEditPanel(bool open)
+    {
+        _squadListMode.SetActive(!open);
+        _editMode.SetActive(open);
+        _creatureInventory.gameObject.SetActive(open);
     }
 }
