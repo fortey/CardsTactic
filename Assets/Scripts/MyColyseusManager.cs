@@ -97,4 +97,9 @@ public class MyColyseusManager : ColyseusManager<MyColyseusManager>
     {
         _mainRoom.Send("updateSquad", squad);
     }
+
+    public void CreateSquad(Squad squad)
+    {
+        _mainRoom.Send("createSquad", squad);
+    }
 }

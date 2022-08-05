@@ -18,6 +18,7 @@ export class MainRoom extends Room<MainRoomState>{
         this.onMessage("getSquads", (client, message) => this.onGetSquads(client));
         this.onMessage("getCreatures", (client, message) => this.onGetCreatures(client));
         this.onMessage("updateSquad", (client, message) => this.onUpdateSquad(client, message));
+        this.onMessage("createSquad", (client, message) => this.onCreateSquad(client, message));
     }
 
     onJoin(client: Client, options: any) {
@@ -67,6 +68,15 @@ export class MainRoom extends Room<MainRoomState>{
         const mongoId = this.state.networkedUsers.get(client.sessionId).mongoId;
 
         Data.updateSquad(mongoId, squad).then(result => {
+            this.onGetSquads(client);
+        }).catch(console.log);
+    }
+
+    onCreateSquad(client: Client, squad: any) {
+
+        const mongoId = this.state.networkedUsers.get(client.sessionId).mongoId;
+
+        Data.createSquad(mongoId, squad).then(result => {
             this.onGetSquads(client);
         }).catch(console.log);
     }

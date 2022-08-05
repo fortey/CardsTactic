@@ -14,6 +14,7 @@ public class Global : Singleton<Global>
 
     public Pool PopupTextPool;
     public Pool ArrowPool;
+    public Squads Squads;
 
     public override void Awake()
     {

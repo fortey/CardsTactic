@@ -28,6 +28,7 @@ export class gameRoom extends Room<GameRoomState> {
     this.onMessage("ability_clicked", (client, message) => this.onAbilityClicked(client, message));
     this.onMessage("action", (client, message) => this.onAction(client, message));
     this.onMessage("pass", (client, message) => this.pass(client));
+    this.onMessage("squad_selected", (client, message) => this.onSquadSelected(client, message));
 
     this.bot = options["bot"];
     //this.roomName = options["name"];
@@ -48,7 +49,18 @@ export class gameRoom extends Room<GameRoomState> {
 
     if (this.bot) {
       this.state.players.set("bot", true);
-      //this.passes.set("bot", this.maxPass);
+
+      let creature = CreatureFactory.get("Mousy")("1", "bot");
+      this.state.creatures.set(creature.id, creature);
+      this.state.board[18] = creature.id;
+
+      creature = CreatureFactory.get("Hell Mousy")("2", "bot");
+      this.state.creatures.set(creature.id, creature);
+      this.state.board[19] = creature.id;
+
+      creature = CreatureFactory.get("Hell Mousy")("10", "bot");
+      this.state.creatures.set(creature.id, creature);
+      this.state.board[13] = creature.id;
     }
 
     if (this.state.players.size === 2) {
@@ -57,35 +69,25 @@ export class gameRoom extends Room<GameRoomState> {
 
       this.lock();
 
-      const playerIds = Array.from(this.state.players.keys());
+      // const playerIds = Array.from(this.state.players.keys());
 
-      let creature = CreatureFactory["Hell Mousy"]("3", playerIds[0]);
-      this.state.creatures.set(creature.id, creature);
-      this.state.board[0] = creature.id;
+      // let creature = CreatureFactory["Hell Mousy"]("3", playerIds[0]);
+      // this.state.creatures.set(creature.id, creature);
+      // this.state.board[0] = creature.id;
 
-      creature = CreatureFactory["Mousy"]("4", playerIds[0]);
-      this.state.creatures.set(creature.id, creature);
-      this.state.board[1] = creature.id;
+      // creature = CreatureFactory["Mousy"]("4", playerIds[0]);
+      // this.state.creatures.set(creature.id, creature);
+      // this.state.board[1] = creature.id;
 
-      creature = CreatureFactory["Strong Mouse"]("5", playerIds[0]);
-      this.state.creatures.set(creature.id, creature);
-      this.state.board[6] = creature.id;
+      // creature = CreatureFactory["Strong Mouse"]("5", playerIds[0]);
+      // this.state.creatures.set(creature.id, creature);
+      // this.state.board[6] = creature.id;
 
-      creature = CreatureFactory["Swamp Mousy"]("6", playerIds[0]);
-      this.state.creatures.set(creature.id, creature);
-      this.state.board[5] = creature.id;
+      // creature = CreatureFactory["Swamp Mousy"]("6", playerIds[0]);
+      // this.state.creatures.set(creature.id, creature);
+      // this.state.board[5] = creature.id;
 
-      creature = CreatureFactory["Mousy"]("1", playerIds[1]);
-      this.state.creatures.set(creature.id, creature);
-      this.state.board[18] = creature.id;
 
-      creature = CreatureFactory["Hell Mousy"]("2", playerIds[1]);
-      this.state.creatures.set(creature.id, creature);
-      this.state.board[19] = creature.id;
-
-      creature = CreatureFactory["Hell Mousy"]("10", playerIds[1]);
-      this.state.creatures.set(creature.id, creature);
-      this.state.board[13] = creature.id;
 
       this.broadcast("start");
       this.started = true;
@@ -282,5 +284,27 @@ export class gameRoom extends Room<GameRoomState> {
     });
 
     GameEvents.onStartRound(this);
+  }
+
+  onSquadSelected(client: Client, squad: any) {
+
+    const playerIds = Array.from(this.state.players.keys());
+
+    const isFirstPlayer = client.sessionId === playerIds[0];
+    let id = isFirstPlayer ? 0 : 10;
+
+    for (let i = 0; i < squad.board.length; i++) {
+      const creatureName: string = squad.board[i];
+
+      if (creatureName != "") {
+        id++;
+        const creature = CreatureFactory.get(creatureName)(id.toString(), client.sessionId);
+        this.state.creatures.set(creature.id, creature);
+
+        const cell = this.board.convertFromSquadBoard(i);
+        this.state.board[cell] = creature.id;
+      }
+    }
+
   }
 }

@@ -1,5 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Squads : MonoBehaviour
@@ -16,25 +16,48 @@ public class Squads : MonoBehaviour
     [SerializeField] private GameObject _editMode;
     [SerializeField] private GameObject _squadListMode;
     [SerializeField] private TMPro.TMP_InputField _nameInput;
-
+    [SerializeField] private GameObject _editButton;
+    [SerializeField] private GameObject _newButton;
+    [SerializeField] private GameObject _selectButton;
+    [SerializeField] private GameObject _closeButton;
+    private Squad[] _squads;
     private Squad _selectedSquad;
 
-    private void OnEnable()
-    {
+    private bool _squadSelectMode;
 
+    private void Show()
+    {
+        gameObject.SetActive(true);
         MyColyseusManager.Instance.GetSquads(OnSquads);
         MyColyseusManager.Instance.GetCreatures(OnCreatures);
+
+        _editButton.SetActive(!_squadSelectMode);
+        _newButton.SetActive(!_squadSelectMode);
+        _selectButton.SetActive(_squadSelectMode);
+        _closeButton.SetActive(!_squadSelectMode);
+    }
+
+    public void SelectSquad(System.Action<Squad> callback)
+    {
+        _squadSelectMode = true;
+        Show();
+    }
+
+    public void SquadView()
+    {
+        _squadSelectMode = false;
+        Show();
     }
 
     private void OnSquads(Squad[] squads)
     {
-        ClearItems();
-        foreach (var squad in squads)
+        if (_selectedSquad != null)
         {
-            var squadItem = _squadItemsPool.Get().GetComponent<SquadItem>();
-            squadItem.Initialize(squad);
-            _squadItems.Add(squadItem);
+            _selectedSquad = squads.FirstOrDefault(s => s.name == _selectedSquad.name);
         }
+
+        _squads = squads;
+        Refresh(squads);
     }
 
     private void ClearItems()
@@ -46,8 +69,23 @@ public class Squads : MonoBehaviour
         _squadItems.Clear();
     }
 
+    private void Refresh(Squad[] squads)
+    {
+        ClearItems();
+        foreach (var squad in squads)
+        {
+            var squadItem = _squadItemsPool.Get().GetComponent<SquadItem>();
+            squadItem.Initialize(squad);
+            _squadItems.Add(squadItem);
+        }
+    }
+
     public void OnSquadSelected(SquadItem squadItem)
     {
+        if (_selectedSquad == squadItem.Squard) return;
+
+        ClearSquadBoard();
+
         _selectedSquad = squadItem.Squard;
 
         for (int i = 0; i < squadItem.Squard.board.Length; i++)
@@ -58,15 +96,13 @@ public class Squads : MonoBehaviour
             else
             {
                 var creatureItem = _creatureItemPool.Get().GetComponent<CreatureListItem>();
-                //Instantiate(_creatureListItemPrefab, cell.transform.position, Quaternion.identity);
 
                 cell.SetItem(creatureItem.transform, creatureItem);
-                creatureItem.gameObject.SetActive(true);////
+                //creatureItem.gameObject.SetActive(true);////
                 creatureItem.Initialize(creatureName);
                 creatureItem.previousCell = cell.transform;
                 creatureItem.SetBlockRaycasts(false);
             }
-
         }
     }
 
@@ -85,23 +121,44 @@ public class Squads : MonoBehaviour
         }
     }
 
+    public void NewSquad()
+    {
+        ClearSquadBoard();
+
+        _selectedSquad = null;
+
+        OpenCloseEditPanel(true);
+        _nameInput.text = "";
+        _creatureInventory.Initialize(_squadBoard, _creatures, _creatureItemPool);
+    }
+
     public void SaveSquad()
     {
-        if (_selectedSquad != null && _nameInput.text != string.Empty)
+        if (_nameInput.text == string.Empty) return;
+
+        if (_selectedSquad == null)
+        {
+            _selectedSquad = new Squad();
+            _selectedSquad.board = new string[8];
+
+            UpdateSquad(_selectedSquad);
+            MyColyseusManager.Instance.CreateSquad(_selectedSquad);
+        }
+        if (_selectedSquad != null)
         {
             OpenCloseEditPanel(false);
 
-            _selectedSquad.name = _nameInput.text;
-
-            for (int i = 0; i < _squadBoard.Count; i++)
-            {
-                if (_squadBoard[i].listItem)
-                    _selectedSquad.board[i] = _squadBoard[i].listItem.Name;
-                else
-                    _selectedSquad.board[i] = "";
-            }
+            UpdateSquad(_selectedSquad);
             MyColyseusManager.Instance.SaveSquad(_selectedSquad);
         }
+    }
+
+    public void CancelEdit()
+    {
+        OpenCloseEditPanel(false);
+        Refresh(_squads);
+        ClearSquadBoard();
+        _selectedSquad = null;
     }
 
     public void OpenCloseEditPanel(bool open)
@@ -109,5 +166,30 @@ public class Squads : MonoBehaviour
         _squadListMode.SetActive(!open);
         _editMode.SetActive(open);
         _creatureInventory.gameObject.SetActive(open);
+    }
+
+    private void UpdateSquad(Squad squad)
+    {
+        squad.name = _nameInput.text;
+
+        for (int i = 0; i < _squadBoard.Count; i++)
+        {
+            if (_squadBoard[i].listItem)
+                squad.board[i] = _squadBoard[i].listItem.Name;
+            else
+                squad.board[i] = "";
+        }
+    }
+    private void ClearSquadBoard()
+    {
+        for (int i = 0; i < _squadBoard.Count; i++)
+        {
+            var creatureItem = _squadBoard[i].listItem;
+            if (creatureItem)
+            {
+                _squadBoard[i].Clear();
+                _creatureItemPool.Push(creatureItem.gameObject);
+            }
+        }
     }
 }

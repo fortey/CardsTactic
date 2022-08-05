@@ -1,8 +1,7 @@
 import { AbilitySchema, CreatureSchema } from "../rooms/schema/GameRoomState"
 
-export const CreatureFactory = {
-
-    "Mousy"(id: string, owner: string): CreatureSchema {
+export const CreatureFactory = new Map([
+    ["Mousy", function (id: string, owner: string): CreatureSchema {
         const creature = new CreatureSchema();
         creature.id = id;
         creature.owner = owner;
@@ -23,9 +22,9 @@ export const CreatureFactory = {
         creature.abilities.push(ability);
 
         return creature;
-    },
+    }],
 
-    "Hell Mousy"(id: string, owner: string): CreatureSchema {
+    ["Hell Mousy", function (id: string, owner: string): CreatureSchema {
         const creature = new CreatureSchema();
         creature.id = id;
         creature.owner = owner;
@@ -53,9 +52,9 @@ export const CreatureFactory = {
         creature.abilities.push(ability);
 
         return creature;
-    },
+    }],
 
-    "Swamp Mousy"(id: string, owner: string): CreatureSchema {
+    ["Swamp Mousy", function (id: string, owner: string): CreatureSchema {
         const creature = new CreatureSchema();
         creature.id = id;
         creature.owner = owner;
@@ -90,9 +89,9 @@ export const CreatureFactory = {
         creature.passiveAbilities.push(ability);
 
         return creature;
-    },
+    }],
 
-    "Strong Mouse"(id: string, owner: string): CreatureSchema {
+    ["Strong Mouse", function (id: string, owner: string): CreatureSchema {
         const creature = new CreatureSchema();
         creature.id = id;
         creature.owner = owner;
@@ -116,5 +115,5 @@ export const CreatureFactory = {
         creature.passiveAbilities.push(ability);
 
         return creature;
-    },
-}
+    }],
+]);

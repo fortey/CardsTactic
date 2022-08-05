@@ -213,6 +213,7 @@ public class GameRoomController : MonoBehaviour
         }
 
         _WaitingOpponent.SetActive(false);
+        Global.Instance.Squads.SelectSquad(OnSquadSelected);
     }
 
     private void onAvailableCells(int[] cells)
@@ -404,4 +405,9 @@ public class GameRoomController : MonoBehaviour
     //         OnSelectedCreatureChanged?.Invoke(creature);
     //     }
     // }
+
+    private void OnSquadSelected(Squad squad)
+    {
+        _room.Send("squad_selected", squad);
+    }
 }

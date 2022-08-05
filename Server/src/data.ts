@@ -113,6 +113,16 @@ class MongoData {
         }
         return true;
     }
+
+    public async createSquad(id: string, squad: any): Promise<any> {
+        try {
+            await this.mongoClient.db("userdb").collection("squads").insertOne({ userId: new ObjectId(id), name: squad.name, board: squad.board });
+        }
+        finally {
+
+        }
+        return true;
+    }
 }
 
 export const Data = new MongoData();

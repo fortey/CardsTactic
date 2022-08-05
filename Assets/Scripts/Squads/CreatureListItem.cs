@@ -25,24 +25,24 @@ public class CreatureListItem : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     public void Initialize(UserCreature creature, Transform parent)
     {
         _name = creature.name;
-        //_count = creature.count;
 
         _nameLabel.text = _name;
-        //_countLabel.text = _count.ToString();
         _image.sprite = Global.Instance.CardSprites[_name];
 
-        transform.SetParent(parent);
+        _transform.SetParent(parent);
+        _transform.localPosition = Vector3.zero;
         inventoryCell = parent;
+
+        _canvasGroup.blocksRaycasts = true;
     }
 
     public void Initialize(string name)
     {
         _name = name;
-        //_count = creature.count;
 
         _nameLabel.text = _name;
-        //_countLabel.text = _count.ToString();
         _image.sprite = Global.Instance.CardSprites[_name];
+        _transform.localPosition = Vector3.zero;
     }
 
     public void OnBeginDrag(PointerEventData eventData)

@@ -19,6 +19,10 @@ export class Board {
         return y * BOARD_WIDTH + x;
     }
 
+    convertFromSquadBoard(i: number): number {
+        return i % 2 * BOARD_WIDTH + Math.floor(i / 2);
+    }
+
     availableCellsForMove(board: string[], cellIndex: number): number[] {
         const { x, y } = this.i_to_xy(cellIndex);
         const cells = [];
