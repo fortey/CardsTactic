@@ -92,4 +92,9 @@ public class MyColyseusManager : ColyseusManager<MyColyseusManager>
         _onCreatures = callback;
         _mainRoom.Send("getCreatures");
     }
+
+    public void SaveSquad(Squad squad)
+    {
+        _mainRoom.Send("updateSquad", squad);
+    }
 }

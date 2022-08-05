@@ -11,6 +11,8 @@ public class SquadInventory : MonoBehaviour
 
     public void Initialize(SquadBoard squadBoard, UserCreature[] userCreatures, Pool creatureItemPool)
     {
+        Clear(creatureItemPool);
+
         _gridLayout.enabled = true;
         foreach (var userCreature in userCreatures)
         {
@@ -32,6 +34,21 @@ public class SquadInventory : MonoBehaviour
                 creatureItem.SetBlockRaycasts(true);
             }
         }
+    }
+
+    private void Clear(Pool creatureItemPool)
+    {
+        foreach (var cell in _cells)
+        {
+            var creatureListItem = cell.Value.GetComponentInChildren<CreatureListItem>();
+            if (creatureListItem)
+            {
+                creatureItemPool.Push(creatureListItem.gameObject);
+            }
+            _cellPool.Push(cell.Value.gameObject);
+        }
+
+        _cells.Clear();
     }
 
     private void DisableGridLayout()

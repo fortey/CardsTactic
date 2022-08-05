@@ -21,13 +21,14 @@ public class Squads : MonoBehaviour
 
     private void OnEnable()
     {
-        ClearItems();
+
         MyColyseusManager.Instance.GetSquads(OnSquads);
         MyColyseusManager.Instance.GetCreatures(OnCreatures);
     }
 
     private void OnSquads(Squad[] squads)
     {
+        ClearItems();
         foreach (var squad in squads)
         {
             var squadItem = _squadItemsPool.Get().GetComponent<SquadItem>();
@@ -99,6 +100,7 @@ public class Squads : MonoBehaviour
                 else
                     _selectedSquad.board[i] = "";
             }
+            MyColyseusManager.Instance.SaveSquad(_selectedSquad);
         }
     }
 

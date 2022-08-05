@@ -29,5 +29,6 @@ public class Pool : MonoBehaviour
     {
         go.SetActive(false);
         _pool.Add(go);
+        go.transform.SetParent(transform);
     }
 }

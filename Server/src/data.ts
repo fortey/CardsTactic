@@ -103,6 +103,16 @@ class MongoData {
         }
         return creatures;
     }
+
+    public async updateSquad(id: string, squad: any): Promise<any> {
+        try {
+            await this.mongoClient.db("userdb").collection("squads").updateOne({ userId: new ObjectId(id), _id: new ObjectId(squad._id) }, { $set: { name: squad.name, board: squad.board } });
+        }
+        finally {
+
+        }
+        return true;
+    }
 }
 
 export const Data = new MongoData();
