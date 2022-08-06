@@ -34,6 +34,7 @@ public class CreatureListItem : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         inventoryCell = parent;
 
         _canvasGroup.blocksRaycasts = true;
+        _image.color = Color.white;
     }
 
     public void Initialize(string name)
@@ -41,8 +42,11 @@ public class CreatureListItem : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         _name = name;
 
         _nameLabel.text = _name;
+        if (_name == null)
+            print("null");
         _image.sprite = Global.Instance.CardSprites[_name];
         _transform.localPosition = Vector3.zero;
+        _image.color = Color.white;
     }
 
     public void OnBeginDrag(PointerEventData eventData)

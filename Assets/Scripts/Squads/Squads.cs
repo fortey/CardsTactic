@@ -189,6 +189,7 @@ public class Squads : MonoBehaviour
             {
                 _squadBoard[i].Clear();
                 _creatureItemPool.Push(creatureItem.gameObject);
+                print($"{i} {creatureItem.gameObject.activeSelf}");
             }
         }
     }
