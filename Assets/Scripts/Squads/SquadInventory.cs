@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class SquadInventory : MonoBehaviour
+public class SquadInventory : MonoBehaviour, IDropHandler
 {
     [SerializeField] private Pool _cellPool;
     [SerializeField] private UnityEngine.UI.GridLayoutGroup _gridLayout;
@@ -33,6 +34,15 @@ public class SquadInventory : MonoBehaviour
                 creatureItem.inventoryCell = inventoryCell.transform;
                 creatureItem.SetBlockRaycasts(true);
             }
+        }
+    }
+
+    public void OnDrop(PointerEventData eventData)
+    {
+        var otherItemTransform = eventData.pointerDrag.transform;
+        if (otherItemTransform.TryGetComponent<CreatureListItem>(out CreatureListItem item))
+        {
+            // item.PutToCell(null);
         }
     }
 

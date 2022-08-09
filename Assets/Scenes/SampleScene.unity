@@ -6217,8 +6217,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1387695259}
   - {fileID: 1778829608}
+  - {fileID: 1387695259}
   - {fileID: 1237417999}
   - {fileID: 1456643475}
   m_Father: {fileID: 2073588499}
@@ -8295,10 +8295,10 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1398016954}
-  - {fileID: 1157312451}
   - {fileID: 778291139}
   - {fileID: 2124890745}
   - {fileID: 1019289689}
+  - {fileID: 1157312451}
   m_Father: {fileID: 1142515362}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -10508,6 +10508,7 @@ MonoBehaviour:
   PopupTextPool: {fileID: 721581872}
   ArrowPool: {fileID: 1889252707}
   Squads: {fileID: 1142515365}
+  GraphicRaycaster: {fileID: 2073588496}
 --- !u!4 &1977377945
 Transform:
   m_ObjectHideFlags: 0

@@ -97,10 +97,10 @@ public class Squads : MonoBehaviour
             {
                 var creatureItem = _creatureItemPool.Get().GetComponent<CreatureListItem>();
 
-                cell.SetItem(creatureItem.transform, creatureItem);
-                //creatureItem.gameObject.SetActive(true);////
+                //cell.SetItem(creatureItem.transform, creatureItem);
                 creatureItem.Initialize(creatureName);
-                creatureItem.previousCell = cell.transform;
+                creatureItem.PutToCell(cell);
+                //creatureItem.previousCell = cell.transform;
                 creatureItem.SetBlockRaycasts(false);
             }
         }

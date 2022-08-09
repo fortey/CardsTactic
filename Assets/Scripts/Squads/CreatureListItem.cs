@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -35,6 +36,7 @@ public class CreatureListItem : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
         _canvasGroup.blocksRaycasts = true;
         _image.color = Color.white;
+        previousCell = null;
     }
 
     public void Initialize(string name)
@@ -47,6 +49,7 @@ public class CreatureListItem : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         _image.sprite = Global.Instance.CardSprites[_name];
         _transform.localPosition = Vector3.zero;
         _image.color = Color.white;
+        previousCell = null;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -56,7 +59,10 @@ public class CreatureListItem : MonoBehaviour, IBeginDragHandler, IDragHandler, 
             invCell.Pop();
             _transform.SetAsLastSibling();
         }
-        _transform.SetParent(inventoryCell);
+        else
+        {
+            _transform.SetParent(inventoryCell);
+        }
         _transform.parent.SetAsLastSibling();
         _canvasGroup.blocksRaycasts = false;
     }
@@ -68,20 +74,60 @@ public class CreatureListItem : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        _transform.localPosition = Vector3.zero;
+
         _canvasGroup.blocksRaycasts = true;
 
-        if (_transform.parent.TryGetComponent<InventoryCell>(out InventoryCell invCell))
-        {
-            invCell.Push(this);
-            if (previousCell && previousCell.TryGetComponent<SquadCell>(out SquadCell squadCell))
-            {
-                squadCell.Clear();
+        // if (_transform.parent.TryGetComponent<InventoryCell>(out InventoryCell invCell))
+        // {
+        //     invCell.Push(this);
+        //     if (previousCell && previousCell.TryGetComponent<SquadCell>(out SquadCell squadCell))
+        //     {
+        //         squadCell.Clear();
 
+        //     }
+        // }
+        // previousCell = _transform.parent;
+
+        List<RaycastResult> results = new List<RaycastResult>();
+        Global.Instance.GraphicRaycaster.Raycast(eventData, results);
+
+        foreach (RaycastResult result in results)
+        {
+            if (result.gameObject.TryGetComponent<SquadCell>(out SquadCell squadCell))
+            {
+                PutToCell(squadCell);
+                return;
             }
         }
-        previousCell = _transform.parent;
+        PutToCell(null);
+    }
 
+    public void PutToCell(SquadCell cell, bool fromSquadCell = false)
+    {
+        if (cell)
+        {
+            if (!fromSquadCell)
+                cell.SetItem(this);
+            _transform.SetParent(cell.transform);
+
+            previousCell = cell.transform;
+
+        }
+        else
+        {
+            _transform.SetParent(inventoryCell);
+            if (inventoryCell.TryGetComponent<InventoryCell>(out InventoryCell invCell))
+            {
+                invCell.Push(this);
+                if (previousCell && previousCell.TryGetComponent<SquadCell>(out SquadCell squadCell))
+                {
+                    squadCell.Clear();
+
+                }
+            }
+            previousCell = null;
+        }
+        _transform.localPosition = Vector3.zero;
     }
 
     public void SetDisable()
