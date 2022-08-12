@@ -24,6 +24,7 @@ public class Squads : MonoBehaviour
     private Squad _selectedSquad;
 
     private bool _squadSelectMode;
+    private System.Action<Squad> _onSquadSelectedForGame;
 
     private void Show()
     {
@@ -37,10 +38,16 @@ public class Squads : MonoBehaviour
         _closeButton.SetActive(!_squadSelectMode);
     }
 
+    private void Hide()
+    {
+        gameObject.SetActive(false);
+    }
+
     public void SelectSquad(System.Action<Squad> callback)
     {
         _squadSelectMode = true;
         Show();
+        _onSquadSelectedForGame = callback;
     }
 
     public void SquadView()
@@ -136,6 +143,12 @@ public class Squads : MonoBehaviour
     {
         if (_nameInput.text == string.Empty) return;
 
+        if (_selectedSquad != null)
+        {
+            UpdateSquad(_selectedSquad);
+            MyColyseusManager.Instance.SaveSquad(_selectedSquad);
+        }
+
         if (_selectedSquad == null)
         {
             _selectedSquad = new Squad();
@@ -144,13 +157,8 @@ public class Squads : MonoBehaviour
             UpdateSquad(_selectedSquad);
             MyColyseusManager.Instance.CreateSquad(_selectedSquad);
         }
-        if (_selectedSquad != null)
-        {
-            OpenCloseEditPanel(false);
 
-            UpdateSquad(_selectedSquad);
-            MyColyseusManager.Instance.SaveSquad(_selectedSquad);
-        }
+        OpenCloseEditPanel(false);
     }
 
     public void CancelEdit()
@@ -175,7 +183,10 @@ public class Squads : MonoBehaviour
         for (int i = 0; i < _squadBoard.Count; i++)
         {
             if (_squadBoard[i].listItem)
+            {
                 squad.board[i] = _squadBoard[i].listItem.Name;
+                print($"{i} - {_squadBoard[i].listItem.Name}");
+            }
             else
                 squad.board[i] = "";
         }
@@ -191,6 +202,15 @@ public class Squads : MonoBehaviour
                 _creatureItemPool.Push(creatureItem.gameObject);
                 print($"{i} {creatureItem.gameObject.activeSelf}");
             }
+        }
+    }
+
+    public void SelectSquadForGame()
+    {
+        if (_selectedSquad != null)
+        {
+            _onSquadSelectedForGame(_selectedSquad);
+            Hide();
         }
     }
 }

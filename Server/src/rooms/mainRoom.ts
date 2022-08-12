@@ -77,7 +77,7 @@ export class MainRoom extends Room<MainRoomState>{
         const mongoId = this.state.networkedUsers.get(client.sessionId).mongoId;
 
         Data.createSquad(mongoId, squad).then(result => {
-            this.onGetSquads(client);
+            this.onGetSquads(client); console.log(squad.board);
         }).catch(console.log);
     }
 }

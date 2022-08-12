@@ -19,8 +19,11 @@ export class Board {
         return y * BOARD_WIDTH + x;
     }
 
-    convertFromSquadBoard(i: number): number {
-        return i % 2 * BOARD_WIDTH + Math.floor(i / 2);
+    convertFromSquadBoard(i: number, reverse: boolean): number {
+        if (reverse)
+            return Math.floor(i / 2) * BOARD_WIDTH + BOARD_WIDTH - 1 - i % 2;
+        else
+            return Math.floor(i / 2) * BOARD_WIDTH + i % 2;
     }
 
     availableCellsForMove(board: string[], cellIndex: number): number[] {

@@ -42,12 +42,13 @@ public class GameRoomController : MonoBehaviour
         _client = client;
         try
         {
+            _WaitingOpponent.SetActive(true);
             _room = await client.JoinOrCreate<GameRoomState>("game_room", options);
 
             _lastRoomId = _room.Id;
             RegisterRoomHandlers();
 
-            _WaitingOpponent.SetActive(true);
+
         }
         catch (Exception e)
         {
@@ -86,6 +87,7 @@ public class GameRoomController : MonoBehaviour
         });
 
         _room.OnMessage<object>("start", StartGame);
+        _room.OnMessage<object>("start_battle", OnStartBattle);
         _room.OnMessage<int[]>("available_cells", onAvailableCells);
         _room.OnMessage<int[]>("available_targets", OnAvailableTargets);
         _room.OnMessage<int[]>("action", OnAction);
@@ -205,7 +207,7 @@ public class GameRoomController : MonoBehaviour
         _isStarted = true;
         for (int i = 0; i < _room.State.board.Count; i++)
         {
-            print(_room.State.board[i]);
+            //print(_room.State.board[i]);
             if (_room.State.board[i] != "")
             {
                 CreateCreature(i);
@@ -214,6 +216,11 @@ public class GameRoomController : MonoBehaviour
 
         _WaitingOpponent.SetActive(false);
         Global.Instance.Squads.SelectSquad(OnSquadSelected);
+    }
+
+    private void OnStartBattle(object message)
+    {
+        _WaitingOpponent.SetActive(false);
     }
 
     private void onAvailableCells(int[] cells)
@@ -408,6 +415,9 @@ public class GameRoomController : MonoBehaviour
 
     private void OnSquadSelected(Squad squad)
     {
+        _WaitingOpponent.SetActive(true);
         _room.Send("squad_selected", squad);
     }
+
+
 }

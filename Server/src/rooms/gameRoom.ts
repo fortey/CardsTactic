@@ -19,6 +19,7 @@ export class gameRoom extends Room<GameRoomState> {
   //passes = new Map<string, number>();
   started = false;
   movedCell: number = null;
+  readyCount = 0;
 
   onCreate(options: any) {
     this.setState(new GameRoomState());
@@ -50,22 +51,24 @@ export class gameRoom extends Room<GameRoomState> {
     if (this.bot) {
       this.state.players.set("bot", true);
 
-      let creature = CreatureFactory.get("Mousy")("1", "bot");
+      let creature = CreatureFactory.get("Mousy")("21", "bot");
       this.state.creatures.set(creature.id, creature);
       this.state.board[18] = creature.id;
 
-      creature = CreatureFactory.get("Hell Mousy")("2", "bot");
+      creature = CreatureFactory.get("Hell Mousy")("22", "bot");
       this.state.creatures.set(creature.id, creature);
       this.state.board[19] = creature.id;
 
-      creature = CreatureFactory.get("Hell Mousy")("10", "bot");
+      creature = CreatureFactory.get("Hell Mousy")("23", "bot");
       this.state.creatures.set(creature.id, creature);
       this.state.board[13] = creature.id;
+
+      this.playerIsReady("bot");
     }
 
     if (this.state.players.size === 2) {
-      this.state.currentTurn = client.sessionId;
-      this.setAutoMoveTimeout();
+      //this.state.currentTurn = client.sessionId;
+      //this.setAutoMoveTimeout();
 
       this.lock();
 
@@ -90,7 +93,7 @@ export class gameRoom extends Room<GameRoomState> {
 
 
       this.broadcast("start");
-      this.started = true;
+
     }
     console.log(client.sessionId, "joined!");
   }
@@ -301,10 +304,27 @@ export class gameRoom extends Room<GameRoomState> {
         const creature = CreatureFactory.get(creatureName)(id.toString(), client.sessionId);
         this.state.creatures.set(creature.id, creature);
 
-        const cell = this.board.convertFromSquadBoard(i);
+        const cell = this.board.convertFromSquadBoard(i, !isFirstPlayer); console.log(i.toString() + ' - ' + cell);
         this.state.board[cell] = creature.id;
       }
     }
 
+    this.playerIsReady(client.sessionId);
+  }
+
+  playerIsReady(playerID: string) {
+    this.readyCount++;
+
+    if (this.readyCount == 2) {
+      this.startBattle();
+    }
+  }
+
+  startBattle() {
+    const playerIds = Array.from(this.state.players.keys());
+    this.state.currentTurn = playerIds[0];
+    this.setAutoMoveTimeout();
+    this.started = true;
+    this.broadcast("start_battle");
   }
 }

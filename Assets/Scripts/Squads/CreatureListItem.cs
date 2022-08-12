@@ -20,7 +20,7 @@ public class CreatureListItem : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     {
         inventoryCell = _transform.parent;
     }
-    private string _name;
+    public string _name;
     public string Name { get => _name; }
 
     public void Initialize(UserCreature creature, Transform parent)
@@ -46,6 +46,7 @@ public class CreatureListItem : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         _nameLabel.text = _name;
         if (_name == null)
             print("null");
+        print(_name);
         _image.sprite = Global.Instance.CardSprites[_name];
         _transform.localPosition = Vector3.zero;
         _image.color = Color.white;
@@ -93,7 +94,7 @@ public class CreatureListItem : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
         foreach (RaycastResult result in results)
         {
-            if (result.gameObject.TryGetComponent<SquadCell>(out SquadCell squadCell))
+            if (result.gameObject.TryGetComponent<SquadCell>(out SquadCell squadCell) && (previousCell != null || squadCell.listItem == null))
             {
                 PutToCell(squadCell);
                 return;
