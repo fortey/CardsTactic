@@ -220,6 +220,7 @@ public class GameRoomController : MonoBehaviour
 
     private void OnStartBattle(object message)
     {
+        _board.Prepare(true);
         _WaitingOpponent.SetActive(false);
     }
 

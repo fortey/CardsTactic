@@ -37,4 +37,18 @@ public class Board : MonoBehaviour
             _cells[i].SetAvailableToMove();
         }
     }
+
+    public void Prepare(bool isFirstPlayer)
+    {
+        for (int r = 0; r < 4; r++)
+        {
+            for (int c = 0; c < 5; c++)
+            {
+                if (isFirstPlayer)
+                    _cells[r * 5 + c].transform.SetSiblingIndex(c);
+                else
+                    _cells[r * 5 + c].transform.SetSiblingIndex(4 - c);
+            }
+        }
+    }
 }
