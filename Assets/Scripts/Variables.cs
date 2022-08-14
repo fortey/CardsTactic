@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Animations;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Variables", menuName = "Cards/Variables", order = 0)]
@@ -17,4 +18,5 @@ public struct CardSprite
 {
     public string name;
     public Sprite sprite;
+    public AnimatorOverrideController animator;
 }

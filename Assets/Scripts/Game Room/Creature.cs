@@ -16,6 +16,7 @@ public class Creature : MonoBehaviour
     [SerializeField] private GameObject _defense;
     [SerializeField] private GameObject _points;
     [SerializeField] private TextMeshProUGUI _pointsCount;
+    [SerializeField] private Animator _animator;
 
     [Header("Attributes")]
     [SerializeField] private GameObject _shotProtection;
@@ -31,6 +32,8 @@ public class Creature : MonoBehaviour
     private IEnumerator _waitForUpdate;
 
     public bool Active { get; private set; }
+    private readonly int _anim_isWalk = Animator.StringToHash("isWalk");
+
     private void Start()
     {
         _waitForUpdate = new WaitForUpdate();
@@ -40,7 +43,15 @@ public class Creature : MonoBehaviour
     {
         Schema = schema;
         _nameLabel.text = schema.name;
-        _image.sprite = Global.Instance.CardSprites[schema.name];
+        _image.sprite = Global.Instance.CardSprites[schema.name].sprite;
+        //_animator.runtimeAnimatorController = Global.Instance.CardSprites[schema.name].animator;
+
+        var animatorOverrideController = Global.Instance.CardSprites[schema.name].animator;
+        _animator.runtimeAnimatorController = animatorOverrideController;
+
+        var clipOverrides = new List<KeyValuePair<AnimationClip, AnimationClip>>(animatorOverrideController.overridesCount);
+        animatorOverrideController.GetOverrides(clipOverrides);
+        animatorOverrideController.ApplyOverrides(clipOverrides);
 
         ID = schema.id;
         Owner = schema.owner;
@@ -86,6 +97,7 @@ public class Creature : MonoBehaviour
 
     public void Move(Vector3 position)
     {
+        _animator.SetBool(_anim_isWalk, true);
         StartCoroutine(Moving(position));
     }
 
@@ -100,6 +112,7 @@ public class Creature : MonoBehaviour
             transform.position = Vector3.Lerp(position, startPos, time * scale);
             yield return _waitForUpdate;
         }
+        _animator.SetBool(_anim_isWalk, false);
     }
 
     private void UpdateStats(CreatureSchema schema)

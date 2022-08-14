@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: StrongMousy
+  m_Controller: {fileID: 9100000, guid: dd8465d0d66fb2945a8a1872a8fc1b7d, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 8dcb7c963abf5c84fb57df26ef87463e, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 50e9e6c2685a508408d6e54ff38bd1d6, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 903aa146877824e40954aae401c84b5c, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 5e1a35584f9a7644998f321910b5fbd9, type: 2}

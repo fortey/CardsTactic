@@ -28,7 +28,7 @@ public class CreatureListItem : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         _name = creature.name;
 
         _nameLabel.text = _name;
-        _image.sprite = Global.Instance.CardSprites[_name];
+        _image.sprite = Global.Instance.CardSprites[_name].sprite;
 
         _transform.SetParent(parent);
         _transform.localPosition = Vector3.zero;
@@ -47,7 +47,7 @@ public class CreatureListItem : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         if (_name == null)
             print("null");
         print(_name);
-        _image.sprite = Global.Instance.CardSprites[_name];
+        _image.sprite = Global.Instance.CardSprites[_name].sprite;
         _transform.localPosition = Vector3.zero;
         _image.color = Color.white;
         previousCell = null;

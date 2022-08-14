@@ -7,7 +7,7 @@ public class Global : Singleton<Global>
 {
     [SerializeField] private Variables Variables;
 
-    public Dictionary<string, Sprite> CardSprites;
+    public Dictionary<string, CardSprite> CardSprites;
 
     public Material AllyCardMaterial { get => Variables.allyCardMaterial; }
     public Material EnemyCardMaterial { get => Variables.enemyCardMaterial; }
@@ -21,6 +21,6 @@ public class Global : Singleton<Global>
     {
         base.Awake();
 
-        CardSprites = Variables.cardSprites.ToDictionary(cs => cs.name, cs => cs.sprite);
+        CardSprites = Variables.cardSprites.ToDictionary(cs => cs.name, cs => cs);
     }
 }
