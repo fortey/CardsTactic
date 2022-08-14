@@ -13,6 +13,7 @@ public class Creature : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _stepsLabel;
     [SerializeField] private Image _targetImage;
     [SerializeField] private GameObject _clock;
+    [SerializeField] private GameObject _fade;
     [SerializeField] private GameObject _defense;
     [SerializeField] private GameObject _points;
     [SerializeField] private TextMeshProUGUI _pointsCount;
@@ -177,6 +178,7 @@ public class Creature : MonoBehaviour
     private void ShowClock(bool show)
     {
         _clock.SetActive(show);
+        _fade.SetActive(show);
     }
 
     private void OnAbilityAdd(int index, AbilitySchema ability)

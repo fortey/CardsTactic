@@ -87,7 +87,7 @@ public class GameRoomController : MonoBehaviour
         });
 
         _room.OnMessage<object>("start", StartGame);
-        _room.OnMessage<object>("start_battle", OnStartBattle);
+        _room.OnMessage<string>("start_battle", OnStartBattle);
         _room.OnMessage<int[]>("available_cells", onAvailableCells);
         _room.OnMessage<int[]>("available_targets", OnAvailableTargets);
         _room.OnMessage<int[]>("action", OnAction);
@@ -146,15 +146,18 @@ public class GameRoomController : MonoBehaviour
 
     private void OnBoardChange(int index, string value)
     {
-        if (value != "" && _isStarted)
+        if (value != "")
         {
             var creature = _creatures[value];
             creature.Move(_board[index].transform.position);
-            if (creature.Owner == _currentNetworkedUser.sessionId)
+            if (_isStarted)
             {
-                _room.Send("select_cell", index);
+                if (creature.Owner == _currentNetworkedUser.sessionId)
+                {
+                    _room.Send("select_cell", index);
+                }
+                UpdateSelectedCell();
             }
-            UpdateSelectedCell();
         }
     }
 
@@ -204,7 +207,7 @@ public class GameRoomController : MonoBehaviour
     #region Server messages
     private void StartGame(object message)
     {
-        _isStarted = true;
+
         for (int i = 0; i < _room.State.board.Count; i++)
         {
             //print(_room.State.board[i]);
@@ -218,9 +221,10 @@ public class GameRoomController : MonoBehaviour
         Global.Instance.Squads.SelectSquad(OnSquadSelected);
     }
 
-    private void OnStartBattle(object message)
+    private void OnStartBattle(string firstPlayer)
     {
-        _board.Prepare(true);
+        _isStarted = true;
+        _board.Prepare(_currentNetworkedUser.sessionId == firstPlayer);
         _WaitingOpponent.SetActive(false);
     }
 

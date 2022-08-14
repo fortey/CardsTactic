@@ -316,7 +316,8 @@ export class gameRoom extends Room<GameRoomState> {
     this.readyCount++;
 
     if (this.readyCount == 2) {
-      this.startBattle();
+      //this.startBattle(); 
+      setTimeout(() => this.startBattle(), 100);
     }
   }
 
@@ -325,6 +326,6 @@ export class gameRoom extends Room<GameRoomState> {
     this.state.currentTurn = playerIds[0];
     this.setAutoMoveTimeout();
     this.started = true;
-    this.broadcast("start_battle");
+    this.broadcast("start_battle", playerIds[0]);
   }
 }
