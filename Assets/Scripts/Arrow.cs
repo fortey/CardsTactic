@@ -9,6 +9,7 @@ public class Arrow : MonoBehaviour
     public void Show(Vector2 start, Vector2 end)
     {
         _transform.position = start;
+        _transform.sizeDelta = new Vector2(0f, _transform.sizeDelta.y);
         var direction = (end - start).normalized;
         var distance = Vector2.Distance(start, end);
 

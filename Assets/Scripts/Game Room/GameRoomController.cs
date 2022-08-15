@@ -224,7 +224,7 @@ public class GameRoomController : MonoBehaviour
     private void OnStartBattle(string firstPlayer)
     {
         _isStarted = true;
-        _board.Prepare(_currentNetworkedUser.sessionId == firstPlayer);
+        _board.Prepare(true);
         _WaitingOpponent.SetActive(false);
     }
 
