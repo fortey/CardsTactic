@@ -14,6 +14,7 @@ public class MyColyseusManager : ColyseusManager<MyColyseusManager>
     [SerializeField] private static NetworkedUser _currentNetworkedUser;
 
     [SerializeField] private Auth _auth;
+    [SerializeField] private GameObject _loading;
 
 
     private Action<Squad[]> _onSquads;
@@ -39,6 +40,8 @@ public class MyColyseusManager : ColyseusManager<MyColyseusManager>
 
     public async void ConnectToMain(string userName)
     {
+        _loading.SetActive(true);
+
         Dictionary<string, object> roomOptions = new Dictionary<string, object>
         {
             ["name"] = userName,
@@ -60,6 +63,8 @@ public class MyColyseusManager : ColyseusManager<MyColyseusManager>
            _currentNetworkedUser = currentNetworkedUser;
 
            _arenaController.JoinOrCreateRoom(client, null);
+
+           _loading.SetActive(false);
        });
 
         _mainRoom.OnMessage<Squad[]>("squads", squads => _onSquads?.Invoke(squads));

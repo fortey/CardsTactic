@@ -193,6 +193,7 @@ public class GameRoomController : MonoBehaviour
     {
         Debug.Log("Room_OnClose: " + closeCode);
         _room = null;
+        ClearRoom();
     }
 
     private void Room_OnError(string errorMsg)
@@ -282,7 +283,7 @@ public class GameRoomController : MonoBehaviour
             else
             {
                 var isMoving = false;
-                if (_selectedCreature && _selectedCreature.Owner == _currentNetworkedUser.sessionId && _availableToMoveCells != null)
+                if (_selectedCreature && _selectedCreature.Owner == _currentNetworkedUser.sessionId && _myTurn && _availableToMoveCells != null)
                 {
                     var currentCellIndex = GetCellIndex(_selectedCreature.ID);
                     if (currentCellIndex != -1)
@@ -424,5 +425,25 @@ public class GameRoomController : MonoBehaviour
         _room.Send("squad_selected", squad);
     }
 
+    public void LeaveGame()
+    {
+        _room.Leave();
+        ClearRoom();
+    }
 
+    private void ClearRoom()
+    {
+        gameObject.SetActive(false);
+        foreach (var creature in _creatures.Values)
+        {
+            Destroy(creature.gameObject);
+        }
+
+        _myTurn = false;
+        _selectedCreature = null;
+        _selectedAction = "";
+        _availableToMoveCells = null;
+        _availableTargetCells = null;
+        _board.ClearCells();
+    }
 }
